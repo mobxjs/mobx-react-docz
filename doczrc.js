@@ -4,8 +4,8 @@ export default {
   themeConfig: {
     mode: 'dark',
   },
-  src: 'src/'
   files: 'docs/**/*.{md,mdx}',
   typescript: true,
   propsParser: false,
+  codeSandbox: false,
 }
