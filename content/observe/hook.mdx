@@ -6,7 +6,7 @@ route: '/observer-hook'
 
 # useObserver hook
 
-> The hook is available only with `mobx-react-lite` library or `mobx-react@6`
+> The hook is available only with `mobx-react-lite` library or `mobx-react@6`.
 
 ```ts
 useObserver<T>(fn: () => T, baseComponentName = "observed", options?: IUseObserverOptions): T
@@ -24,17 +24,17 @@ It allows you to use an observer like behaviour, but still allowing you to optim
 One good thing about this is that if any hook changes an observable for some reason then the component won't rerender twice unnecessarily.
 
 ```tsx
-import { useObserver, useLocalStore } from "mobx-react-lite"
+import { useObserver, useLocalStore } from 'mobx-react-lite'
 
 function Person() {
-    const person = useLocalStore(() => ({ name: "John" }))
-    return useObserver(() => (
-        <div>
-            {person.name}
-            <button onClick={() => (person.name = "Mike")}>No! I am Mike</button>
-        </div>
-    ))
+  const person = useLocalStore(() => ({ name: 'John' }))
+  return useObserver(() => (
+    <div>
+      {person.name}
+      <button onClick={() => (person.name = 'Mike')}>No! I am Mike</button>
+    </div>
+  ))
 }
 ```
 
-Despite of using hook in the middle of the component, it will re-render a whole component on change of the observable. If you want to micro-manage renders, feel free to use [`<Observer />`](/observer-component) or `useForceUpdate` option (for advanced users).
+Despite using `useObserver` hook in the middle of the component, it will re-render a whole component on change of the observable. If you want to micro-manage renders, feel free to use [`<Observer />`](/observer-component) or `useForceUpdate` option (for advanced users).

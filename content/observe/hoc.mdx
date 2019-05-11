@@ -6,9 +6,9 @@ route: '/observer-hoc'
 
 # observer HOC
 
-> Use `mobx-react` if you need to observe class component.
+> Use `mobx-react` if you need to observe class component. No options are allowed there.
 
-Is the most prominent from family of tools to introduce reactivity to your components. Please refer to [React docs](https://reactjs.org/docs/higher-order-components.html) for a basic understading of HOC pattern.
+Is the most prominent from family of tools to introduce reactivity to your components. Please refer to [React docs](https://reactjs.org/docs/higher-order-components.html) for a basic understanding of HOC pattern.
 
 ```ts
 observer<P>(baseComponent: React.FC<P>, options?: IObserverOptions): React.FC<P>
@@ -19,7 +19,7 @@ interface IObserverOptions {
 }
 ```
 
-The `observer` converts a functional component into a reactive component, which tracks which observables are used automatically and re-renders the component when one of these values changes. Observables can be passed through props, accessed from context or created locally with `useLocalStore`.
+The `observer` converts a component into a reactive component, which tracks which observables are used automatically and re-renders the component when one of these values changes.
 
 Along the observer capability, the `React.memo` is applied to the component. The general idea is, that observed components rarely need to re-render based on a complex props.
 
