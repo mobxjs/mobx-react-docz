@@ -1,0 +1,55 @@
+---
+name: Why to observe?
+menu: Observe state
+route: '/why-observe'
+---
+
+import { Playground } from 'docz'
+import { Counter } from '../../src/Counter'
+
+# Why to observe?
+
+MobX is based on concept of **observables** which may feel like magical tiny boxes (_as everything unknown_), but it's much more simple.
+
+If you have ever worked with PubSub-like systems (eg. _EventEmitter_), the observable it's fairly similar concept, but wrapped into a fancy package.
+
+- It will take care of adding/removing listeners while you focus on declaring what data you need.
+- It doesn't care about time. You will always get a latest value no matter when you start observing.
+
+This is great React world as you can stick to a declarative way of writing component and simply work with data without additional hurdles.
+
+<Playground>
+  <Counter multiplier={5} />
+</Playground>
+
+```tsx
+import { observer, useAsObservableSource, useLocalStore } from 'mobx-react-lite'
+
+interface Props {
+  multiplier: number
+}
+
+export const Counter = observer<Props>(props => {
+  const observableProps = useAsObservableSource(props)
+  const store = useLocalStore(() => ({
+    count: 10,
+    get multiplied() {
+      return observableProps.multiplier * store.count
+    },
+    inc() {
+      store.count += 1
+    },
+  }))
+
+  return (
+    <div>
+      <span>{store.count}</span> * <span>{props.multiplier}</span> ={' '}
+      <span>{store.multiplied}</span>
+      <br />
+      <button id="inc" onClick={store.inc}>
+        Increment
+      </button>
+    </div>
+  )
+})
+```
