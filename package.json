@@ -1,0 +1,24 @@
+{
+  "name": "mobx-react-docz",
+  "version": "0.0.0",
+  "description": "Documentation site source for MobX in React",
+  "main": "index.js",
+  "repository": "git@github.com:mobxjs/mobx-react-docz.git",
+  "author": "Daniel K. <fredy.c@seznam.cz>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "docz dev ",
+    "build": "docz build"
+  },
+  "dependencies": {
+    "docz": "^1.2.0",
+    "docz-theme-default": "^1.2.0",
+    "prettier": "^1.17.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  }
+}
