@@ -1,5 +1,6 @@
 ---
 name: Libraries
+route: /libraries
 ---
 
 # Libraries
@@ -10,20 +11,22 @@ Then the [React Hooks](https://reactjs.org/docs/hooks-intro.html) came to the li
 
 Consider this a little FAQ on what lib you shall pick
 
-### Cannot use React Hooks yet?
+## Cannot use React Hooks yet?
 
 Code with class components and Hooks are out of reach? Just stay with `mobx-react@5`, no worries.
 
-### Fully embranced Hooks?
+## Fully embranced Hooks?
 
 No class components in your code? Use the `mobx-react-lite` directly, it got you covered.
 
-Note: The library does not include way of propagating state (Provider, inject).
+Note: The library does not include way of propagating state (Provider, inject). Please use the [React Context](https://reactjs.org/docs/context.html).
 
-### Migrating to React Hooks?
+## Migrating to React Hooks?
 
 Class components still do exists in your code, but there are Hooks as well?
 
-The easiest would be to use `mobx-react@6`, but it's still in beta (as of May 2019) so it's probably better not to use in a precious production environment yet.
+The easiest would be to use `mobx-react@6`, but it's still in beta (as of May 2019) so it's probably better not to use in a important production deployments yet.
 
-The harder way is to stick to stable `mobx-react@5` and use `mobx-react-lite` for a migrated components.
+The other way is to stick to stable `mobx-react@5` and use `mobx-react-lite` for a migrated components.
+
+The Provider/inject from `mobx-react` is compatible with `mobx-react-lite` in case you prefer it over the [React Context](https://reactjs.org/docs/context.html)

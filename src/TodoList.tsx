@@ -1,22 +1,3 @@
----
-name: Introduction
-route: /
----
-
-import { Playground } from 'docz'
-import { TodoList } from '../src/TodoList'
-
-# Introduction
-
-[MobX](https://mobx.js.org/) in [React](https://reactjs.org) brings easy reactivity to your components. And it can handle whole application state as well.
-
-<Playground>
-  <TodoList
-    initialTodos={['Introduce MobX in React', 'Make a great app with MobX']}
-  />
-</Playground>
-
-```tsx
 import React from 'react'
 import { observer, useLocalStore } from 'mobx-react-lite'
 
@@ -53,12 +34,35 @@ export const TodoList = observer<{ initialTodos: string[] }>(
         {store.pendingTodos.map(renderTodo(false))}
         {store.doneTodos.map(renderTodo(true))}
         <br />
-        <input ref={todoRef} />
+        <input ref={todoRef} placeholder="I will..." />
         <button onClick={store.addTodo}>Add todo</button>
       </div>
     )
   },
 )
-```
 
-Note: Example is using `mobx-react-lite` along with [React Hooks](https://reactjs.org/docs/hooks-intro.html). See more [about Libraries](/libraries).
+function Todo({ text, done, onToggle }) {
+  const onClick = React.useCallback(() => onToggle(text), [text])
+  return (
+    <div
+      onClick={onClick}
+      key={text}
+      style={{ textDecoration: done ? 'line-through' : 'inherit' }}
+    >
+      <span
+        style={{
+          display: 'inline-block',
+          width: '1.5rem',
+          textAlign: 'center',
+        }}
+      >
+        {done ? '✔' : '👀'}
+      </span>
+      {text}
+    </div>
+  )
+}
+
+function createTodos(todos: string[]) {
+  return todos.reduce((acc, todo) => ({ ...acc, [todo]: false }), {})
+}
