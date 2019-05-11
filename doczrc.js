@@ -1,3 +1,5 @@
+import doczPluginNetlify from 'docz-plugin-netlify'
+
 export default {
   title: 'MobX with React',
   description: 'Make your components truly reactive with MobX',
@@ -9,4 +11,5 @@ export default {
   typescript: true,
   propsParser: false,
   codeSandbox: false,
+  plugins: [doczPluginNetlify()],
 }
