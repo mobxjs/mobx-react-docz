@@ -1,0 +1,42 @@
+---
+name: observer component
+menu: Observe state
+route: '/observer-component'
+---
+
+# Observer component
+
+```ts
+<Observer />
+```
+
+Is a React component, which applies observer to an anonymous region in your component.
+
+It takes as children a single, argumentless function which should return exactly one React component.
+
+The rendering in the function will be tracked and automatically re-rendered when needed.
+
+This can come in handy when needing to pass render function to external components (for example the React Native listview), or if you want to observe only relevant parts of the output for a performance reasons.
+
+import { Playground } from 'docz'
+import ObservePerson from './component'
+
+<Playground>
+  <ObservePerson />
+</Playground>
+
+```tsx
+import { Observer } from 'mobx-react'
+import { useLocalStore } from 'mobx-react-lite'
+
+function ObservePerson() {
+  const person = useLocalStore(() => ({ name: 'John' }))
+  return (
+    <div>
+      {person.name}
+      <Observer>{() => <div>{person.name}</div>}</Observer>
+      <button onClick={() => (person.name = 'Mike')}>No! I am Mike</button>
+    </div>
+  )
+}
+```

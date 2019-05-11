@@ -4,52 +4,31 @@ menu: Observe state
 route: '/why-observe'
 ---
 
-import { Playground } from 'docz'
-import { Counter } from '../components/Counter'
-
 # Why to observe?
 
 MobX is based on concept of **observables** which may feel like magical tiny boxes (_as everything unknown_), but it's fairly simple actually.
 
 If you have ever worked with [PubSub-like patterns](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (eg. _EventEmitter_), the observable it's fairly similar concept, but wrapped into a fancy package.
 
-- It will take care of adding/removing listeners while you focus on declaring what data you need.
-- It's time-proof. You will always get a latest value no matter when you start observing.
+ ✨ It will manage subscriptions automatically while you focus on declaring what data you need.
 
-This is great React world as you can stick to a declarative way of writing component and simply work with data without additional hurdles and boilerplate.
+ ⏱ It's time-proof. You will always get a latest value no matter when you start observing.
 
-<Playground>
-  <Counter multiplier={5} initialCount={1} />
-</Playground>
+<p>
+This is very useful the React world as you can stick to a declarative way of writing components and simply work with data without additional hurdles and boilerplate.
+</p>
 
 ```tsx
-import { observer, useAsObservableSource, useLocalStore } from 'mobx-react-lite'
-
-interface Props {
-  initialCount: number
-  multiplier: number
+function LogoutWidget() {
+  const { user } = useStore()
+  return useObserver(() => (
+    <Link to="/logout">
+      <span className="name">{user.name}</span>
+    </Link>
+  ))
 }
-
-export const Counter = observer<Props>(props => {
-  const observableProps = useAsObservableSource(props)
-  const store = useLocalStore(() => ({
-    count: props.initialCount,
-    get multiplied() {
-      return observableProps.multiplier * store.count
-    },
-    inc() {
-      store.count += 1
-    },
-  }))
-
-  return (
-    <div>
-      <span>{store.count}</span> * <span>{props.multiplier}</span> ={' '}
-      <span>{store.multiplied}</span>{' '}
-      <button id="inc" onClick={store.inc}>
-        Increment
-      </button>
-    </div>
-  )
-})
 ```
+
+In a usual React world the component cannot re-render itself based on change of `user.name`. The parent component needs to cause an update to child component and that's not very efficient.
+
+With observer in place, component itself can be notified about the change and do a re-render without a parent ever knowing about it.
