@@ -4,4 +4,26 @@ name: Libraries
 
 # Libraries
 
-**TBD**
+By the end of the year 2018 there was a unified way of using MobX in React world - library [mobx-react](https://github.com/mobxjs/mobx-react).
+
+Then the [React Hooks](https://reactjs.org/docs/hooks-intro.html) came to the light and the [mobx-react-lite](https://github.com/mobxjs/mobx-react-lite) was made. It was great for several enthusiasts, but newcomers did (and still do) suffer.
+
+Consider this a little FAQ on what lib you shall pick
+
+### Cannot use React Hooks yet?
+
+Code with class components and Hooks are out of reach? Just stay with `mobx-react@5`, no worries.
+
+### Fully embranced Hooks?
+
+No class components in your code? Use the `mobx-react-lite` directly, it got you covered.
+
+Note: The library does not include way of propagating state (Provider, inject).
+
+### Migrating to React Hooks?
+
+Class components still do exists in your code, but there are Hooks as well?
+
+The easiest would be to use `mobx-react@6`, but it's still in beta (as of May 2019) so it's probably better not to use in a precious production environment yet.
+
+The harder way is to stick to stable `mobx-react@5` and use `mobx-react-lite` for a migrated components.
