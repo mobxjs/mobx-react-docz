@@ -10,12 +10,14 @@ MobX is based on concept of **observables** which may feel like magical tiny box
 
 If you have ever worked with [PubSub-like patterns](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) (eg. _EventEmitter_), the observable it's fairly similar concept, but wrapped into a fancy package.
 
- ✨ It will manage subscriptions automatically while you focus on declaring what data you need.
+✨ It will manage subscriptions automatically while you focus on declaring what data you need.
 
- ⏱ It's time-proof. You will always get a latest value no matter when you start observing.
+⏱ It's time-proof. You will always get a latest value no matter when you start observing.
 
 <p>
-This is very useful the React world as you can stick to a declarative way of writing components and simply work with data without additional hurdles and boilerplate.
+  This is very useful the React world as you can stick to a declarative way of
+  writing components and simply work with data without additional hurdles and
+  boilerplate.
 </p>
 
 ```tsx
@@ -32,3 +34,9 @@ function LogoutWidget() {
 In a usual React world the component cannot re-render itself based on change of `user.name`. The parent component needs to cause an update to child component and that's not very efficient.
 
 With observer in place, component itself can be notified about the change and do a re-render without a parent ever knowing about it.
+
+## How to observe?
+
+- [**observer HOC**](/observer-hoc)
+- [**Observer component**](/observer-component)
+- [**useObserver hook**](/observer-hook)
