@@ -21,6 +21,11 @@ export default {
   themeConfig: {
     mode: 'dark',
     codemirrorTheme: 'blackboard',
+    showPlaygroundEditor: false,
+    colors: {
+      codeColor: '#8DA6CE',
+      codeBg: '#0C1021',
+    },
   },
   plugins: [doczPluginNetlify()],
 }
