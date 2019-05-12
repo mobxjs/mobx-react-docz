@@ -14,7 +14,7 @@ Do you want to improve the docs? Read the [contributors guide][Contributing] and
 
 Feel free to use this repo [issues] for questions. However, bear in mind, that there are very few people around for now (May 2019) and you might be waiting a fair amount of time for the answer.
 
-Alternatively visit [Spectum] or [Gitter] for a more urgent questions (no guarantees though).
+Alternatively visit [Spectrum] or [Gitter] for a more urgent questions (no guarantees though).
 
 [Spectrum]: https://spectrum.chat/mobx-state-tree
 [Gitter]: https://gitter.im/mobxjs/mobx
