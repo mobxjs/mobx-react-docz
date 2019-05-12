@@ -1,0 +1,66 @@
+---
+name: mobx-react → lite
+route: /migration-guides/mobx-react-lite
+menu: Migration guides
+---
+
+# Migration guides
+
+## From mobx-react to mobx-react-lite
+
+_TODO(?): quick description of differences (or link)._
+
+### Should I migrate?
+
+_TODO: reasons for which developers could or should migrate._
+* One reason could be that in a future major version, [React will drop the legacy context API](https://reactjs.org/docs/context.html#legacy-api).
+
+### Case 1: app bootstrapping, context setup
+
+A typical pattern is to create a root store that could be provided to any component that needs it.
+
+#### Before (mobx-react)
+
+Bootstrapping and setting up the provider.
+```js
+import * as mobx from 'mobx'
+import App from './App'
+import RootStore from './stores/RootStore'
+import {Provider} from 'mobx-react'
+
+const rootStore = new RootStore()
+
+// AppContainer is a necessary wrapper component for HMR
+const render = (Component) => {
+  reactDom.render(
+    <Provider rootStore={rootStore}>
+      <Component />
+    </Provider>
+    document.getElementById('root')
+  )
+}
+
+render(App)
+```
+
+Then consuming the root store in a component
+```js
+import {observer, inject} from 'mobx-react'
+import PropTypes from 'prop-types'
+import React from 'react'
+
+export function App (props) {
+  const {rootStore} = props
+  return (
+      <div>
+        My App {rootStore.value}
+      </div>
+  )
+}
+
+export default inject('rootStore')(observer(App))
+```
+
+#### After (mobx-react-lite)
+
+_TODO_
