@@ -6,9 +6,11 @@ route: '/observer-component'
 
 # Observer component
 
-```ts
-<Observer />
+```tsx
+<Observer>{renderFn}</Observer>
 ```
+
+> Works the same way with `mobx-react` or `mobx-react-lite` library. No exception for class components.
 
 Is a React component, which applies observer to an anonymous region in your component.
 
@@ -37,6 +39,40 @@ function ObservePerson() {
       <Observer>{() => <div>{person.name}</div>}</Observer>
       <button onClick={() => (person.name = 'Mike')}>No! I am Mike</button>
     </div>
+  )
+}
+```
+
+## Nesting caveat
+
+Observer can see observables only within its own render function. If you use another render prop component, it won't be able to observe changes. Consider following example.
+
+```tsx
+import { Observer } from 'mobx-react'
+
+function ObservePerson() {
+  return (
+    <Observer>
+      {() => (
+        <GetStore>{store => <div>{store.wontSeeChangesToThis}</div>}</GetStore>
+      )}
+    </Observer>
+  )
+}
+```
+
+You need to switch it around to work around the problem. Or use React Hooks if possible.
+
+```tsx
+import { Observer } from 'mobx-react'
+
+function ObservePerson() {
+  return (
+    <GetStore>
+      {store => (
+        <Observer>{() => <div>{store.changesAreSeenAgain}</div>}</Observer>
+      )}
+    </GetStore>
   )
 }
 ```

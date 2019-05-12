@@ -1,20 +1,12 @@
 ---
 name: How to manage state?
 menu: Manage state
-route: '/how-state'
+route: '/state-how'
 ---
 
 # How to manage state?
 
-State management in React is very broad topic and new patterns are introduced very often. MobX simplifies some things, but there is several approach to use (#ILikeOptions).
-
-### Mutable state
-
-Important aspect of MobX state is its mutability. On the contrary of popular solutions like Redux or [useReducer] which works best with immutable data structures, the MobX is based on direct mutability to [notify any subscribers](/why-observe) about the change.
-
-### Don't destructure
-
-MobX observable can be objects (and derivates) only. When destructuring, any primite variables will contain last values only and won't be observable anymore. Use [boxed observables](https://mobx.js.org/refguide/boxed.html) to track primitive values exclusively.
+State management in React is very broad topic and new patterns are introduced very often. MobX simplifies some things, but there is still several approach to use (#ILikeOptions).
 
 ## Creating a state
 
@@ -50,25 +42,25 @@ In simple scenarios you can create an observable locally within a component and 
 
 For a more robust state management it's recommended to use [React Context][context].
 
-## Example
+### Example
 
 ```tsx
 import React from 'react'
 
 const storeContext = React.createContext(null)
 
-export const StoreProvider = React.memo(({ children }) => {
+export const StoreProvider = ({ children }) => {
   // createStore is your preferred way of creating store
   const [store] = React.useState(createStore)
   return <storeContext.Provider value={store}>{children}</storeContext.Provider>
-})
+}
 
 export const useStore = () => {
   return React.useContext(storeContext)
 }
 ```
 
-You can drop `StoreProvider` anywhere in the tree (_top is preferred_) and access store with convenient `useStore` hook. The Provider won't ever re-render (especially with React.memo).
+You can drop `StoreProvider` anywhere in the tree (_top is preferred_) and access store with convenient `useStore` hook. The Provider won't re-render unless forced by a parent.
 
 > The `mobx-react` contains its own Provider component and `inject` HOC which exists mostly for legacy reasons. You can achieve the same with React Context in much simpler way. However, feel free to use those tools if you like them or if you cannot use React Hooks yet.
 

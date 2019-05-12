@@ -1,0 +1,13 @@
+---
+name: State destructuring
+menu: Manage state
+route: '/state-destruct'
+---
+
+# Don't destructure
+
+MobX observable are objects (_and derivates_) only. When destructuring, any primite variables will remain at latest values and won't be observable anymore. Use [boxed observables][boxed] to track primitive values exclusively or preferrably pass a whole state object around.
+
+_example pending_
+
+[boxed]: https://mobx.js.org/refguide/boxed.html

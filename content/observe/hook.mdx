@@ -6,22 +6,22 @@ route: '/observer-hook'
 
 # useObserver hook
 
-> The hook is available only with `mobx-react-lite` library or `mobx-react@6`.
-
 ```ts
 useObserver<T>(fn: () => T, baseComponentName = "observed", options?: IUseObserverOptions): T
 
 interface IUseObserverOptions {
-    // optional custom hook that should make a component re-render (or not) when changes are detected
+    // optional custom hook that should make a component re-render (or not) upon changes
     useForceUpdate: () => () => void
 }
 ```
+
+> The hook is available only with `mobx-react-lite` library or `mobx-react@6`.
 
 Low level implementation used internally by [observer HOC](/observer-hoc) and [Observer component](/observer-component).
 
 It allows you to use an observer like behaviour, but still allowing you to optimize the component in any way you want (e.g. using memo with a custom areEqual, using forwardRef, etc.) and to declare exactly the part that is observed (the render phase).
 
-One good thing about this is that if any hook changes an observable for some reason then the component won't rerender twice unnecessarily.
+One good thing about this is that if any hook changes an observable for some reason then the component won't rerender twice unnecessarily. (_example pending_)
 
 ```tsx
 import { useObserver, useLocalStore } from 'mobx-react-lite'

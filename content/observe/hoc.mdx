@@ -6,8 +6,6 @@ route: '/observer-hoc'
 
 # observer HOC
 
-> Use `mobx-react` if you need to observe class component. No options are allowed there.
-
 Is the most prominent from family of tools to introduce reactivity to your components. Please refer to [React docs](https://reactjs.org/docs/higher-order-components.html) for a basic understanding of HOC pattern.
 
 ```ts
@@ -19,12 +17,14 @@ interface IObserverOptions {
 }
 ```
 
+> Use `mobx-react` if you need to observe class component. No options are allowed there.
+
 The `observer` converts a component into a reactive component, which tracks which observables are used automatically and re-renders the component when one of these values changes.
 
 Along the observer capability, the `React.memo` is applied to the component. The general idea is, that observed components rarely need to re-render based on a complex props.
 
 import { Playground } from 'docz'
-import { Counter } from '../components/Counter'
+import { Counter } from '../examples/Counter'
 
 <Playground>
   <Counter multiplier={5} initialCount={1} />
