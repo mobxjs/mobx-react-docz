@@ -17,18 +17,18 @@ For advanced and more robust state the better choice might be [mobx-state-tree].
 Lastly we have shiny new Hooks to help on this journey like [useLocalStore].
 
 ```tsx
+import { useLocalStore } from 'mobx-react-lite'
+
 function CreatingState() {
   const simpleState = React.useRef(observable.array([1, 2, 3])).current
-  const [biggerState] = React.useState(() => createExpensiveStore())
+  const [bigState] = React.useState(createExpensiveStore)
   const localState = useLocalState(() => ({
     count: 0,
     inc() {
       localState.count += 1
     },
   }))
-  return (
-    <Rendering simple={simpleState} bigger={biggerState} local={localStore} />
-  )
+  return <Rendering simple={simpleState} big={bigState} local={localStore} />
 }
 ```
 
@@ -36,17 +36,18 @@ function CreatingState() {
 
 ## Accessing a state
 
-Second important aspect of state management is how to pass created observable around the component tree. There is no MobX related magic, but it's certainly worth mentioning here.
+Second important aspect of state management is how to pass created observable around the component tree. There is no MobX related logic, but it's certainly worth mentioning here.
 
-In simple scenarios you can create an observable locally within a component and then pass it manually through props. It's pretty much the same approach you would use with eg. [useReducer] except you will be passing single object around only.
+In simple scenarios you can create an observable locally within a component and then pass it manually through props (as shown above). It's pretty much the same approach you would use with eg. [useReducer] except you will be passing single object around only.
 
-For a more robust state management it's recommended to use [React Context][context].
+For a more robust state management it's recommended [to use React Context][context] over the legacy inject.
 
-### Example
+### Quick example
 
 ```tsx
 import React from 'react'
 
+// notice we don't need to export this
 const storeContext = React.createContext(null)
 
 export const StoreProvider = ({ children }) => {
@@ -60,12 +61,18 @@ export const useStore = () => {
 }
 ```
 
-You can drop `StoreProvider` anywhere in the tree (_top is preferred_) and access store with convenient `useStore` hook. The Provider won't re-render unless forced by a parent.
+```tsx
+import React from 'react'
+import { useStore } from './store'
 
-> The `mobx-react` contains its own Provider component and `inject` HOC which exists mostly for legacy reasons. You can achieve the same with React Context in much simpler way. However, feel free to use those tools if you like them or if you cannot use React Hooks yet.
+export const WelcomingThingy = observer(() => {
+  const store = useStore()
+  return <div>Hello, {store.firstName}</div>
+})
+```
 
 [usereducer]: https://reactjs.org/docs/hooks-reference.html#usereducer
 [observable]: https://mobx.js.org/refguide/observable.html
 [mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree
-[uselocalstore]: /useLocalStore
-[context]: https://reactjs.org/docs/context.html
+[uselocalstore]: /state-local
+[context]: /recipes-inject#welcome-to-react-context
