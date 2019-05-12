@@ -1,0 +1,58 @@
+---
+name: How to observe?
+menu: Observe state
+route: '/observe-how'
+---
+
+# Adding reactivity to React components
+
+There are three ways to add reactivity to components:
+
+😎 [observer HOC][observerh]
+
+🤓 [observer component][observerc]
+
+🧐 [useObserver hook][useobserver]
+
+In most cases, there difference doesn't matter that much, but here is an overview of the three different approaches
+
+```tsx
+import { observable } from 'mobx'
+import { Observer, useObserver, observer } from 'mobx-react-lite'
+import ReactDOM from 'react-dom'
+
+const person = observable({
+  name: 'John',
+})
+
+// named function is optional (for debugging purposes)
+const P1 = observer(function P1({ person }) {
+  return <h1>{person.name}</h1>
+})
+
+const P2 = ({ person }) => <Observer>{() => <h1>{person.name}</h1>}</Observer>
+
+const P3 = ({ person }) => {
+  return useObserver(() => <h1>{person.name}</h1>)
+}
+
+ReactDOM.render(
+  <div>
+    <P1 person={person} />
+    <P2 person={person} />
+    <P3 person={person} />
+  </div>,
+)
+
+setTimeout(() => {
+  person.name = 'Jane'
+}, 1000)
+```
+
+[![Edit MobX in React - observer pattern](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/4qrv105l47?fontsize=14)
+
+Curious what makes observability so great and [why you should do it](/observer-how)?
+
+[observerh]: /observer-hoc
+[observerc]: /observer-component
+[useobserver]: /observer-hook

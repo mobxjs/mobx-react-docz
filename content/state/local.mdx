@@ -1,0 +1,49 @@
+---
+name: State of component
+menu: Manage state
+route: '/state-local'
+---
+
+# Local component state
+
+```
+useLocalStore<T>(initializer: () => T): T
+```
+
+Local observable state can be introduced by using the `useLocalStore` hook, that runs its initializer function once to create an observable store and keeps it around for a lifetime of a component. A quick example would be:
+
+```tsx
+import { useLocalStore, useObserver } from "mobx-react-lite"
+
+const SmartTodo = () => {
+    const todo = useLocalStore(() => ({
+        title: "Test",
+        done: true,
+        toggle() {
+            todo.done = !todo.done
+        }
+    }))
+
+    return useObserver(() => (
+        <h1 onClick={todo.toggle}>
+            {todo.title} {todo.done ? "[DONE]" : "[TODO]"}
+        </h1>
+    ))
+})
+```
+
+> For a class based components feel free to use [decorator-based approach][decorators] for declaring state or popular [mobx-state-tree].
+
+With `useLocalStore`, all properties of the returned object will be made observable automatically, getters will be turned into computed properties, and methods will be bound to the store and apply [mobx transactions][actions] automatically. If new class instances are returned from the initializer, they will be kept as is.
+
+Even though `useLocalStore` is mostly beneficial for really complex local state, or to obtain more uniform code base, it's also possible to keep it in eg. React Context and make it available to other components. For really simple cases it's actually recommended to stick to `React.useState` which certainly comes with less ceremony than `useLocalStore`.
+
+> Note that using a local store might conflict with future React features like concurrent rendering.
+
+In many cases it is possible to extract the initializer function to a function outside the component definition. Which makes it possible to test the store itself in a more straight-forward manner, and avoids creating the initializer closure on each re-render.
+
+It is important to realize that the store is created only once (_per component instance_)! It is not possible to specify dependencies to force re-creation, **nor should you directly be referring to props for the initializer function**, as changes in those won't propagate. See more [about state outsourcing](/state-outsourcing).
+
+[decorators]: https://mobx.js.org/refguide/observable-decorator.html
+[actions]: https://mobx.js.org/refguide/action.html
+[mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree

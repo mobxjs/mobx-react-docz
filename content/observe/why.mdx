@@ -1,7 +1,7 @@
 ---
 name: Why to observe?
 menu: Observe state
-route: '/why-observe'
+route: '/observe-why'
 ---
 
 # Why to observe?
@@ -31,12 +31,8 @@ function LogoutWidget() {
 }
 ```
 
-In a usual React world the component cannot re-render itself based on change of `user.name`. The parent component needs to cause an update to child component and that's not very efficient.
+In a usual React world such a component cannot re-render itself based on change of `user.name`. The parent component needs to cause an update to child component and that's not very efficient.
 
-With observer in place, component itself can be notified about the change and do a re-render without a parent ever knowing about it.
+With observer in place, component itself can be notified about the change (as long as `user` is observable) and do a re-render without a parent ever knowing about it.
 
-## How to observe?
-
-- [**observer HOC**](/observer-hoc)
-- [**Observer component**](/observer-component)
-- [**useObserver hook**](/observer-hook)
+Continue reading on [how to make your components reactive](/observe-how).

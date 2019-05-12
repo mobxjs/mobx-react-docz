@@ -17,34 +17,18 @@ interface IObserverOptions {
 }
 ```
 
-> Use `mobx-react` if you need to observe class component. No options are allowed there.
+> Use `mobx-react` if you need to observe class component. It doesn't support any of mentioned options.
 
 The `observer` converts a component into a reactive component, which tracks which observables are used automatically and re-renders the component when one of these values changes.
 
 Along the observer capability, the `React.memo` is applied to the component. The general idea is, that observed components rarely need to re-render based on a complex props.
 
-import { Playground } from 'docz'
-import { Counter } from '../examples/Counter'
-
-<Playground>
-  <Counter multiplier={5} initialCount={1} />
-</Playground>
-
 ```tsx
-import { observer, useAsObservableSource, useLocalStore } from 'mobx-react-lite'
-
-interface Props {
-  initialCount: number
-  multiplier: number
-}
+import { observer, useLocalStore } from 'mobx-react-lite'
 
 export const Counter = observer<Props>(props => {
-  const observableProps = useAsObservableSource(props)
   const store = useLocalStore(() => ({
     count: props.initialCount,
-    get multiplied() {
-      return observableProps.multiplier * store.count
-    },
     inc() {
       store.count += 1
     },
@@ -52,11 +36,8 @@ export const Counter = observer<Props>(props => {
 
   return (
     <div>
-      <span>{store.count}</span> * <span>{props.multiplier}</span> ={' '}
-      <span>{store.multiplied}</span>{' '}
-      <button id="inc" onClick={store.inc}>
-        Increment
-      </button>
+      <span>{store.count}</span>
+      <button onClick={store.inc}>Increment</button>
     </div>
   )
 })
