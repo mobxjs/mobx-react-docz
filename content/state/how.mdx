@@ -42,34 +42,9 @@ In simple scenarios you can create an observable locally within a component and 
 
 For a more robust state management it's recommended [to use React Context][context] over the legacy inject.
 
-### Quick example
+### Global state?
 
-```tsx
-import React from 'react'
-
-// notice we don't need to export this
-const storeContext = React.createContext(null)
-
-export const StoreProvider = ({ children }) => {
-  // createStore is your preferred way of creating store
-  const [store] = React.useState(createStore)
-  return <storeContext.Provider value={store}>{children}</storeContext.Provider>
-}
-
-export const useStore = () => {
-  return React.useContext(storeContext)
-}
-```
-
-```tsx
-import React from 'react'
-import { useStore } from './store'
-
-export const WelcomingThingy = observer(() => {
-  const store = useStore()
-  return <div>Hello, {store.firstName}</div>
-})
-```
+It's totally possible to simply import store instance from a file directly. It's definitely the easiest approach. However, if you are writing tests (you should), global state is a problem and can cause flakiness. In short, we don't recommended global state.
 
 [usereducer]: https://reactjs.org/docs/hooks-reference.html#usereducer
 [observable]: https://mobx.js.org/refguide/observable.html
