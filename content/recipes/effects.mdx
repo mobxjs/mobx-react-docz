@@ -10,6 +10,9 @@ You might have been using [`React.useEffect`][useeffect] for several reasons, eg
 What if your side effect actually depends on observable value? Don't worry, MobX got you covered.
 
 ```tsx
+import React from 'react'
+import { autorun } from 'mobx'
+
 function DocumentTitle() {
   const store = useStore()
 
@@ -25,15 +28,15 @@ function DocumentTitle() {
 }
 ```
 
-Important realization here is that you will never need to specify dependencies for `useEffect` because there are simply none. Or to be more precise it does depend on `store` variable, but that's the same case as for `React.useRef` which you shouldn't specify in dependencies as well.
+Important realization here is that you will never need to specify dependencies for `useEffect` because there are simply none. Or to be more precise it does depend on `store` variable, but that's the same case as for `React.useRef` which value you shouldn't specify in dependencies also.
 
 > We might eventually provide utility hooks like `useAutorun` or `useReaction`, but these are very easy to make on your own if you don't want to wait.
 
 Since the `autorun` (and others from MobX family) returns a disposal function, it's ensured that `useEffect` will take care of disposal on unmount of the component.
 
-## Avoid dependencies
+## Non-observable dependencies
 
-What if effect depends on value from props as well? One way is certainly to specify it in dependency array of `useEffect` as you have been taught. However that means a reaction would be recreated and that's not very effective.
+What if effect depends on value from eg. props? One way is certainly to specify it in dependency array of `useEffect` as you have been taught. However that means a reaction would be recreated and that's not very effective.
 
 Much better way is to `useAsObservableSource` ([learn more](/state-outsourcing)).
 
@@ -44,11 +47,14 @@ function Fetcher({ baseUrl, resource }) {
 
   React.useEffect(
     () =>
-      reaction(() => ${observables.url}/${store.itemId}, fetchUrl => {
-        fetch(fetchUrl).then(result => {
-          store.setResult(result)
-        })
-      }),
+      reaction(
+        () => `${observables.url}/${store.itemId}`,
+        fetchUrl => {
+          fetch(fetchUrl).then(result => {
+            store.setResult(result)
+          })
+        },
+      ),
     [],
   )
 
