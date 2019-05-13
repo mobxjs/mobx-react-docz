@@ -1564,14 +1564,14 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
 
-"@types/react-dom@^16.8.4":
+"@types/react-dom@16.8.4":
   version "16.8.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.8.4.tgz#7fb7ba368857c7aa0f4e4511c4710ca2c5a12a88"
   integrity sha512-eIRpEW73DCzPIMaNBDP5pPIpK1KXyZwNgfxiVagb5iGiz6da+9A5hslSX6GAQKdO7SayVCS/Fr2kjqprgAvkfA==
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.8.17":
+"@types/react@*", "@types/react@16.8.17":
   version "16.8.17"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.8.17.tgz#f287b76a5badb93bc9aa3f54521a3eb53d6c2374"
   integrity sha512-pln3mgc6VfkNg92WXODul/ONo140huK9OMsx62GlBlZ2lvjNK86PQJhYMPLO1i66aF5O9OPyZefogvNltBIszA==
@@ -3990,14 +3990,14 @@ docz-core@^1.2.0:
     ws "^7.0.0"
     yargs "^13.2.2"
 
-docz-plugin-netlify@^1.1.4:
+docz-plugin-netlify@1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/docz-plugin-netlify/-/docz-plugin-netlify-1.1.4.tgz#879f36007f1eeec0b7fc596d2f0e079fd0d6d67c"
   integrity sha512-RbYH/R+uS7IT8DPnOCnHRjsG4DtrR85ZOOOBtZBK/dtSR8FYKEWOF9l1hT0e4MVfAJGViUSb0U6Zm3WOIUTtjA==
   dependencies:
     docz-core "^0.10.3"
 
-docz-theme-default@^1.2.0:
+docz-theme-default@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/docz-theme-default/-/docz-theme-default-1.2.0.tgz#f69cb667ca7ee2c673c90bbd4bb96a3f6f6d0931"
   integrity sha512-VdBLJFJLPtnAOEOmbIHRYQsXzMGhvikdmfBt31oYMkiR+s9XMaOwutkwtsFZDQuUgNvTDhe98CVGSGl4/S3/Zg==
@@ -4052,7 +4052,7 @@ docz-utils@^1.2.0:
     unist-util-is "^2.1.2"
     unist-util-visit "^1.4.0"
 
-docz@^1.2.0:
+docz@1.2.0, docz@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/docz/-/docz-1.2.0.tgz#916091b52686d2421487bd710f7b3004df947969"
   integrity sha512-E9X9ffYtv3W/jXVdOi24oeQ4zM6ZCCgp4ls3CIfMRPjR2ZB02qCzIDzXa7pjQyqUVpQAerQ98CVjR1LjLJwj6Q==
@@ -7906,7 +7906,7 @@ prepend-http@^1.0.1:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=
 
-prettier@^1.14.0, prettier@^1.17.0:
+prettier@1.17.0, prettier@^1.14.0, prettier@^1.17.0:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.17.0.tgz#53b303676eed22cc14a9f0cec09b477b3026c008"
   integrity sha512-sXe5lSt2WQlCbydGETgfm1YBShgOX4HxQkFPvbxkcwgDvGDeqVau8h+12+lmSVlP3rHPz0oavfddSZg/q+Szjw==
