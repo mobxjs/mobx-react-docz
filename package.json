@@ -28,7 +28,7 @@
     "docz": "1.2.0",
     "docz-plugin-netlify": "1.1.4",
     "docz-theme-default": "1.2.0",
-    "prettier": "1.17.0"
+    "prettier": "1.17.1"
   },
   "prettier": {
     "semi": false,
