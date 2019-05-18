@@ -13,55 +13,102 @@ What if your side effect actually depends on observable value? Don't worry, MobX
 import React from 'react'
 import { autorun } from 'mobx'
 
-function DocumentTitle() {
-  const store = useStore()
-
+function useDocumentTitle(store: TStore) {
   React.useEffect(
     () =>
       autorun(() => {
         document.title = `${store.title} - ${store.sectionName}`
       }),
-    [],
+    [], // note empty dependencies
   )
-
-  return null
 }
 ```
 
-Important realization here is that you will never need to specify dependencies for `useEffect` because there are simply none. Or to be more precise it does depend on `store` variable, but that's the same case as for `React.useRef` which value you shouldn't specify in dependencies also.
+Important realization here is that you will **never** need to specify dependencies for `useEffect` because there are simply none. Or to be more precise it does depend on `store` variable, but that's the same case as for `React.useRef` which value you shouldn't specify in dependencies also.
 
-> We might eventually provide utility hooks like `useAutorun` or `useReaction`, but these are very easy to make on your own if you don't want to wait.
+> It surely is slightly verbose. We might eventually provide utility hooks like `useAutorun` or `useReaction`, but these are very easy to make on your own if you don't want to wait.
 
 Since the `autorun` (and others from MobX family) returns a disposal function, it's ensured that `useEffect` will take care of disposal on unmount of the component.
 
 ## Non-observable dependencies
 
-What if effect depends on value from eg. props? One way is certainly to specify it in dependency array of `useEffect` as you have been taught. However that means a reaction would be recreated and that's not very effective.
+What if effect depends on value from eg. props? One way is to specify it in dependency array of `useEffect` as you have been taught. However that means a reaction would be recreated and that's not very effective. In fact it wouldn't even work because reaction is not executed immediatelly by default (see [`fireImmediatelly` option][reaction]).
 
-Much better way is to `useAsObservableSource` ([learn more](/state-outsourcing)).
+Much better way is to `useAsObservableSource` ([learn more](/state-outsourcing)). Instead of constantly thinking what dependencies you should be providing, you simply use observables and let MobX figure out the rest. Isn't it great?
 
-```tsx
-function Fetcher({ baseUrl, resource }) {
-  const observables = useAsObservableSource({ url: `${baseUrl}/${resource}` })
+```ts
+import React from 'react'
+import { reaction } from 'mobx'
+import { useAsObservableSource } from 'mobx-react-lite'
+
+function useFetcher<T>(
+  resource: string,
+  baseUrl = process.env.BASE_URL,
+): T | null {
   const store = useStore()
+  const source = useAsObservableSource({ url: `${baseUrl}/${resource}` })
+  const [result, setResult] = React.useState(null)
+
+  const doFetch = (fetchUrl: string) => {
+    store.setLoading(true)
+
+    fetch(fetchUrl)
+      .then(result => {
+        setResult(result)
+      })
+      .catch(err => {
+        store.setError(err)
+      })
+      .finally(() => {
+        store.setLoading(false)
+      })
+  }
 
   React.useEffect(
-    () =>
-      reaction(
-        () => `${observables.url}/${store.itemId}`,
-        fetchUrl => {
-          fetch(fetchUrl).then(result => {
-            store.setResult(result)
-          })
-        },
-      ),
+    () => reaction(() => `${source.url}/${store.itemId}`, doFetch),
     [],
   )
 
-  return null
+  return result
 }
 ```
 
-Instead of constantly thinking what dependencies you should provide, you simply use those variables and let MobX figure out the rest. Isn't it great?
+### Non-reactive side effects
+
+With the help of `useFetcher` hook we defined above we can showcase another approach for tackling side effects.
+
+```tsx
+const BookDetail = () => {
+  const store = useStore()
+  const result = useFetcher<TBook>('/books')
+
+  React.useEffect(() => {
+    document.title = `${result.title} - ${store.sectionName}`
+  })
+
+  return useObserver(() => {
+    if (store.loading) {
+      return <Loading />
+    }
+    if (store.error) {
+      return <ErrorDisplay error={store.error} />
+    }
+    return (
+      <div>
+        <h1>{result.title}</h1>
+      </div>
+    )
+  })
+}
+```
+
+Notice that even though `useEffect` references observable value we don't treat it is such simply because it's stored there mostly for a convenience. In case you do expect its value to be changed, you would have to wrap it to `autorun`.
+
+> Using `observer` HOC here would not solve anything because it cannot see inside the `useEffect` callback.
+
+There are no dependencies for `useEffect` meaning it will run on every render. It's definitely ok in this case because `useFetcher` is a major cause of re-rendering of the component.
+
+However, if the `sectionName` would be dynamic, you would need to `useAsObservableSource` again or perhaps set the fetcher result inside the store to make it observable.
 
 [useeffect]: https://reactjs.org/docs/hooks-reference.html#useeffect
+[reaction]: https://mobx.js.org/refguide/reaction.html
