@@ -5,7 +5,7 @@ menu: Recipes
 
 # ~~Injecting~~ Accessing stores
 
-The term of injection comes from `mobx-react` library. It is the legacy way of accessing the MobX stores across component tree. Since the previous concept of React context was rather awkward to use, these utilities were made to smoothen things up.
+The term of injection comes from `mobx-react` library. It is a legacy way of accessing the MobX stores across component tree. The previous version of [React context][context-article] was rather awkward to use, these utilities were made to smoothen things up.
 
 We are in 2019 now and we don't need injections anymore (_kids, don't do drugs_). For the sake of easy transition, this term is mentioned here, but consider it obsolete. **But why? ([see below](#why-is-inject-obsolete))**
 
@@ -26,10 +26,10 @@ export type TFriend = {
 
 export function createStore() {
   // storing variable in closure means you can access it in methods
-  // otherwise you would have to use `this`
+  // otherwise you would have to use `this` which doesn't work well with TypeScript
   const store = {
     friends: [] as TFriend[]
-    makeFriend(name, isFavorite = false, isSingle: false) {
+    makeFriend(name, isFavorite = false, isSingle = false) {
       const oldFriend = store.friends.find(friend => friend.name === name)
       if (oldFriend) {
         oldFriend.isFavorite = isFavorite
@@ -50,16 +50,17 @@ export type TStore = ReturnType<typeof createStore>
 
 ### Setup context
 
-Nothing spectacular about it really, better [read React docs](context) if you are unsure though.
+Nothing spectacular about it really, better to read [React docs](context) if you are unsure though.
 
 ```tsx
 import React from 'react'
 import { createStore, TStore } from './createStore'
+import { useLocalStore } from 'mobx-react-lite'
 
 const storeContext = React.createContext<TStore | null>(null)
 
 export const StoreProvider = ({ children }) => {
-  const [store] = React.useState(createStore)
+  const store = useLocalStore(createStore)
   return <storeContext.Provider value={store}>{children}</storeContext.Provider>
 }
 
@@ -73,7 +74,7 @@ export const useStore = () => {
 }
 ```
 
-> You could drop a whole Provider dance and set created store as a default value of the Context. The reference of the store object does not need to change, so it will work in most cases. However, you might still setup a Provider for tests to battle flakiness.
+> You could drop a whole Provider dance and set created store as a default value of the `createContext`. The reference of the store object does not need to change, so it will work in most cases. However, you might still setup a Provider for tests to battle flakiness.
 
 ### Making friends
 
@@ -111,7 +112,8 @@ import { useStore } from '../../../../store'
 
 export const MatchMaker = observer(() => {
   const store = useStore()
-  // filtering could be done in store as well, showing both options
+  // for a sake of example filtering is done here
+  // you might as well expose it on the store directly
   const singleAndFavoriteFriends = store.singleFriends.filter(
     friend => friend.isFavorite,
   )
@@ -123,23 +125,31 @@ export const MatchMaker = observer(() => {
 
 The example above is still fairly contrived. Usually the app state is much more robust. It's completely up to you how you will assemble it together.
 
-Perhaps you want to consider [mobx-state-tree] for declaring store shape? It comes with other powerful features like snapshots and patches. Be sure to check it out.
+Perhaps you want to consider [mobx-state-tree] for declaring store shape? It comes with other powerful features like snapshots and type safety out of box. Be sure to check it out.
 
-Either way, the power of Hooks allows you to create specific hooks, eg. `useFriendsList` or `useOrderCart` that grabs only a part of the whole store or it can mix two separate segments together if it's desired.
+Either way, the power of Hooks allows you to create specific hooks, eg. `useFriendsList` or `useOrderCart` that grabs only a part of the whole store. Or it can mix two separate segments together if it's desired.
 
 Specific hooks are also great for mitigating long paths in bigger folder structure like seen in examples above.
 
 ## Why is inject obsolete?
 
-You might argue that `inject` HOC isn't just a dumb "give me a store" tool. Yes, it also allows selections over the store and pick values the component is interested in.
+You might argue that `inject` HOC isn't just a dumb "give me a store" tool. Yes, it also allows reactive selections over the store and pick values the component is interested in.
 
-Have it occured to you it might be for a legacy reasons as well?
+Have it occured to you it might be for a legacy reasons?
 
-The "problem" of HOC is they can only pass props to wrapped component. There was no better way to do so. This is where the term **inject** originated as you were really _injecting props_ into a component that weren't there originally.
+import { Emoji } from '../components'
 
-Such selections were also reactive. Whenever observable value has changed, it executed selection again and cause component re-render. As you can see above, we can achieve same with Hooks too.
+> No example? Well, it's a legacy pattern, it doesn't deserve one. <Emoji>😆</Emoji>
+>
+> We don't want to confuse you more than necessary. Have a look at [example from old docs][inject] if you want though.
 
-If you are not using selections, the `inject` is forcing you to specify name of the store, eg. `inject("rootStore")` all over the place. How akward is that?
+The "problem" of HOC is they can only pass props to wrapped component. This is where the term **inject** originated as you are really _injecting props_ into a component that weren't there originally.
+
+Whenever observable value in the `inject` selection changes, it can re-render underlying component with new props. That's truly handy, but as you can see above, we can achieve same with less ceremony. As long as you have observer in place, there is no need to worry about this part.
+
+But...but...**mixing state with a component UI is bad practice**, right? Well, nobody is forcing you to do that. You might as well have a component that does MobX stuff only and renders the UI component in the end. It's not that different from HOC approach except it's more explicit.
 
 [context]: https://reactjs.org/docs/context.html
+[context-article]: https://markpollmann.com/react-context/
 [mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree
+[inject]: https://github.com/mobxjs/mobx-react/tree/20ed293a38a7212a2ff66de7639ce0c79aa911c0#customizing-inject
