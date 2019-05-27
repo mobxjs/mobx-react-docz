@@ -42,9 +42,11 @@ In simple scenarios you can create an observable locally within a component and 
 
 For a more robust state management it's recommended [to use React Context][context] over the legacy inject.
 
-### Global state?
+### Global variable state?
 
-It's totally possible to simply import store instance from a file directly. It's definitely the easiest approach. However, if you are writing tests (you should), global state is a problem and can cause flakiness. In short, we don't recommended global state.
+It's possible to keep a application state in global variable that would get imported in component files and it will work in most cases.
+
+However, if you are writing tests (you should), global variable is a problem and can cause flakiness. In short, we don't recommended keeping state in global variable.
 
 [usereducer]: https://reactjs.org/docs/hooks-reference.html#usereducer
 [observable]: https://mobx.js.org/refguide/observable.html
