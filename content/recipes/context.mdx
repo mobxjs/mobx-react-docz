@@ -1,0 +1,134 @@
+---
+name: React Context
+menu: Recipes
+---
+
+# React Context
+
+If you are using `inject` in your code, please refer to [migration guide](/recipes-migration) first or learn [why inject is considered obsolete](/recipes-inject).
+
+[React Context][context] has replaced the [Legacy context][context-legacy] which was fairly awkward to use.
+
+Let's make a small, but not so contrived example to show what this means for MobX.
+
+### Create store
+
+Let's declare a simple store. No need to worry about observables at this point, it's just a plain object.
+
+```tsx
+export type TFriend = {
+  name: string
+  isFavorite: boolean
+  isSingle: boolean
+}
+
+export function createStore() {
+  // storing variable in closure means you can access it in methods
+  // otherwise you would have to use `this` which doesn't work well with TypeScript
+  const store = {
+    friends: [] as TFriend[]
+    makeFriend(name, isFavorite = false, isSingle = false) {
+      const oldFriend = store.friends.find(friend => friend.name === name)
+      if (oldFriend) {
+        oldFriend.isFavorite = isFavorite
+        oldFriend.isSingle = isSingle
+      } else {
+        store.friends.push({ name, isFavorite, isSingle })
+      }
+    },
+    get singleFriends() {
+      return store.friends.filter(friend => friend.isSingle)
+    },
+  }
+  return store
+}
+
+export type TStore = ReturnType<typeof createStore>
+```
+
+### Setup context
+
+Nothing spectacular about it really, better to read [React docs](context) if you are unsure though.
+
+```tsx
+import React from 'react'
+import { createStore, TStore } from './createStore'
+import { useLocalStore } from 'mobx-react-lite'
+
+const storeContext = React.createContext<TStore | null>(null)
+
+export const StoreProvider = ({ children }) => {
+  const store = useLocalStore(createStore)
+  return <storeContext.Provider value={store}>{children}</storeContext.Provider>
+}
+
+export const useStore = () => {
+  const store = React.useContext(storeContext)
+  if (!store) {
+    // this is especially useful in TypeScript so you don't need to be checking for null all the time
+    throw new Error('You have forgot to use StoreProvider, shame on you.')
+  }
+  return store
+}
+```
+
+> You could drop a whole Provider dance and set created store as a default value of the `createContext`. The reference of the store object does not need to change, so it will work in most cases. However, you might still setup a Provider for tests to battle flakiness.
+
+### Making friends
+
+Now somewhere in the tree we have component like this.
+
+```tsx
+import React from 'react'
+import { useStore } from '../../../store'
+
+export const FriendsMaker = observer(() => {
+  const store = useStore()
+  const onSubmit = React.useCallback(({ name, favorite, single }) => {
+    store.makeFriend(name, favorite, single)
+  }, [])
+  return (
+    <Form onSubmit={onSubmit}>
+      Total friends: {store.friends.length}
+      <input type="text" id="name" />
+      <input type="checkbox" id="favorite" />
+      <input type="checkbox" id="single" />
+    </Form>
+  )
+})
+```
+
+_Explicit implementation of form logic would take up too much space and is not important for the show case._
+
+### Listing friends
+
+In some other part of the app we want to show friends that are single and favorite.
+
+```tsx
+import React from 'react'
+import { useStore } from '../../../../store'
+
+export const MatchMaker = observer(() => {
+  const store = useStore()
+  // for a sake of example filtering is done here
+  // you might as well expose it on the store directly
+  const singleAndFavoriteFriends = store.singleFriends.filter(
+    friend => friend.isFavorite,
+  )
+  return <div>{singleAndFavoriteFriends.map(renderFriend)}</div>
+})
+```
+
+## Complex stores
+
+The example above is still very contrived. Usually the app state is much more robust, but it does not differ that much in its essence. You can have a single Root store and attach every other store onto it. Or have a multiple contexts, each for own segment of the app.
+
+Perhaps you want to consider [mobx-state-tree] for declaring store shape? It comes with other powerful features like snapshots and type safety out of box. Be sure to check it out.
+
+The power of React hooks allows you to create specific hooks for abstracting how is the store structured, eg. `useFriendsList` or `useOrderCart`.
+
+Such hooks are also great for mitigating long paths in bigger folder structure like seen in examples above.
+
+[context]: https://reactjs.org/docs/context.html
+[context-legacy]: https://reactjs.org/docs/legacy-context.html
+[mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree

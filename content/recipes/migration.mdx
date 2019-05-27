@@ -1,0 +1,110 @@
+---
+name: Migration guide
+menu: Recipes
+---
+
+# Migration guide
+
+Check out the [Libraries](/libraries) page for a general overview on what's out there right now.
+
+> You don't need to migrate a whole app at once. On the contrary **partial migration is well supported**.
+
+## 1. Replace observer
+
+The `mobx-react-lite` library exports `observer` HOC and `Observer` component and they work exactly same way you are used to. The major difference is `mobx-react` does not support Hooks and `mobx-react-lite` version does not support class components.
+
+> You can use both libraries alongside within a single app, they won't conflict in any way.
+
+Whenever you convert your class component to function component, just use the _lite_ version of observer instead or `useObserver` hook if you like it more. Note that function components do not support decorators.
+
+## 2. Get rid of inject
+
+Inject is considered a legacy way of accessing the MobX stores. [But why](/recipes-inject)? Don't worry, it won't disappear that soon.
+
+In fact, the `mobx-react@6` [will include similar utility][mobxreact6] build on top of new Context to ease on transition. If you prefer that API, feel free to use it, but it's very possible it will be gone in `mobx-react@7`.
+
+Our recommendation is start using [React Context](/recipes-context) as soon as possible. You can make yourself a little bridge component to allow for a partial migration. Get inspired by following example (you might need to tweak it to your specific needs).
+
+```tsx
+const rootContext = React.createContext()
+
+export class BridgeProvider extends React.PureComponent {
+  static contextTypes = {
+    mobxStores: PropTypes.object
+  }
+  render() {
+    return (
+      <rootContext.Provider value={this.context.mobxStores}>
+        {this.props.children}
+      </rootContext.Provider>
+    )
+  }
+}
+export useRootStore = () => {
+  return React.useContext(rootContext)
+}
+```
+
+Include `BridgeProvider` in the tree (under the `Provider` from `mobx-react` package). Then you can start using `useRootStore` hook instead of `inject` in your function components you are migrating.
+
+Eventually, when you migrate all uses of `inject`, you can move logic for creating stores into the `BridgeProvider` (possibly rename it) and ditch the original Provider completely.
+
+### Huh? So how to replace inject?
+
+Ok, let's see a small contrived example on how your component probably looked till now.
+
+```tsx
+@inject(stores => ({
+  username: stores.user.name,
+  orderId: stores.order.id,
+}))
+@observer
+class UserOrderInfo extends React.Component {
+  render() {
+    return (
+      <div>
+        {this.props.username} has order {this.props.orderId}
+      </div>
+    )
+  }
+}
+```
+
+Let's convert it to function component, shall we?
+
+```tsx
+const UserOrderInfo = observer(() => {
+  const { user, order } = useRootStore()
+  return (
+    <div>
+      {user.name} has order {order.id}
+    </div>
+  )
+})
+```
+
+Take a moment and think about both variants. Which one looks better to you? The latter one has some appeal, right?
+
+But...but...**mixing state with a component UI is bad practice**, right? Well, nobody is forcing you to do that. If accessing context in UI component bothers you, just pass it through the props. Mapping stores properties can be useful for reusability purposes, but why not to make a custom hook instead?
+
+```tsx
+function useUserData() {
+  const { user, order } = useRootStore()
+  // make a whole hook observable so the component does not need to be
+  return useObserver(() => ({
+    username: stores.user.name,
+    orderId: stores.order.id,
+  }))
+}
+
+const UserOrderInfo = () => {
+  const data = useUserData()
+  return (
+    <div>
+      {data.username} has order {data.orderId}
+    </div>
+  )
+}
+```
+
+[mobxreact6]: https://github.com/mobxjs/mobx-react/issues/640

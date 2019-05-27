@@ -5,7 +5,9 @@ menu: Manage state
 
 # State outsourcing
 
-What to do when your rendering depends on both observable value and non-observable one? Regular component props for example.
+**_since mobx-react-lite@1.3.0_**
+
+In some case you might want to use power of MobX over the set of variables while keeping logic
 
 ```
 useAsObservableSource<T>(state: T): T
@@ -13,49 +15,21 @@ useAsObservableSource<T>(state: T): T
 
 The `useAsObservableSource` hook can be used to turn any set of values into an observable object that has a stable reference (the same object is returned every time from the hook).
 
-> The hook is available only with `mobx-react-lite` library or `mobx-react@6`.
+The goal of this hook is to trap React primitives such as props or state into a local, observable object so that the [store initializer](/state-local) or [effects](/recipes-effects) can safely refer to it, and get notified if any of the values change. Additionally, you can wrap a set of values into observable object and pass it to other components.
 
-The goal of this hook is to trap React primitives such as props or state into a local, observable object so that the [store initializer](/state-local) or [effects](/recipes-effects) can safely refer to it, and get notified if any of the values change.
-
-The value passed to `useAsObservableSource` should always be an object, and is made only shallowly observable.
+The value passed to `useAsObservableSource` should always be an object. Only shallow properties are converted. For a deep conversion use `mobx.observable` along with `React.useState`.
 
 The object returned by `useAsObservableSource`, although observable, should be considered read-only for all practical purposes.
 
 > Tip: for optimal performance it is recommend to not use `useAsObservableSource` together on the same component as useObserver (or observer), as it might trigger double renderings. Instead, use [Observer component](/observe-component).
 
-import { Playground } from 'docz'
-import { Counter, MultiplierInput } from '../examples/Counter'
-
-<Playground>
-  <MultiplierInput>
-    {multiplier => <Counter multiplier={multiplier} initialCount={1} />}
-  </MultiplierInput>
-</Playground>
-
 ```tsx
-import { observer, useAsObservableSource, useLocalStore } from 'mobx-react-lite'
+import { useAsObservableSource } from 'mobx-react-lite'
 
-export const Counter = observer(props => {
-  const observableProps = useAsObservableSource(props)
-  const store = useLocalStore(() => ({
-    count: props.initialCount,
-    get multiplied() {
-      return observableProps.multiplier * store.count
-    },
-    inc() {
-      store.count += 1
-    },
-  }))
-
-  return (
-    <>
-      <button id="inc" onClick={store.inc}>
-        {`Count: ${store.count}`}
-      </button>
-      <span>{store.multiplied}</span>
-    </>
-  )
-})
+const PersonSource = ({ name, age }) => {
+  const person = useAsObservableSource({ name, age })
+  return <PersonBanner person={person} />
+}
 ```
 
 ## Why to go around like that?
@@ -68,4 +42,4 @@ You might also want to pass that store further down the tree. Do you really want
 
 ## Don't destructure
 
-There is a whole [page dedicated to destructuring problem](/state-destructuring), but as it's common source of errors, let's repeat in here. Don't ever do `const { multiplier } = useAsObservableSource(props)`. Such value would not be observable anymore.
+There is a whole [page dedicated to destructuring problem](/state-destruct), but as it's common source of errors, let's repeat in here. Don't ever do `const { multiplier } = useAsObservableSource(props)`. Such value would not be observable anymore.

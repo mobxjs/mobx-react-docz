@@ -10,13 +10,14 @@ State management in React is very broad topic and new patterns are introduced ve
 
 ## Creating a state
 
-The state in MobX is represented by any [observable object][observable]. Any of the mentioned approaches in linked document are completely in React world.
+The state in MobX is represented by any [observable object][observable]. You can use any of the mentioned approaches in linked document.
 
 For advanced and more robust state the better choice might be [mobx-state-tree].
 
 Lastly we have shiny new Hooks to help on this journey like [useLocalStore] _(not available in class components)_.
 
 ```tsx
+import { observable } from 'mobx'
 import { useLocalStore } from 'mobx-react-lite'
 
 function CreatingState() {
@@ -42,7 +43,7 @@ class CreatingState extends React.PureComponent {
 }
 ```
 
-> Fair warning. Don't ever use `React.useMemo` to keep reference to the state object. It might be randomly thrown away by React and would lose data.
+> Fair warning. Don't ever use `React.useMemo` to keep reference to the state object. It can be randomly thrown away by React and you would lose data.
 
 ## Accessing a state
 
@@ -50,7 +51,7 @@ Second important aspect of state management is how to pass created observable ar
 
 In simple scenarios you can create an observable locally within a component and then pass it manually through props (as shown above). It's pretty much the same approach you would use with eg. [useReducer] except you will be passing single object around only.
 
-For a more robust state management it's recommended [to use React Context][context] over the legacy inject.
+For a more robust state management it's recommended [to use React Context][context] over the legacy [inject].
 
 ### Global variable state?
 
@@ -62,4 +63,5 @@ However, if you are writing tests (you should), global variable is a problem and
 [observable]: https://mobx.js.org/refguide/observable.html
 [mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree
 [uselocalstore]: /state-local
-[context]: /recipes-inject#welcome-to-react-context
+[context]: /recipes-context
+[inject]: /recipes-inject

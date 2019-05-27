@@ -15,8 +15,8 @@ If you have ever worked with [PubSub-like patterns](https://en.wikipedia.org/wik
 ⏱ It's time-proof. You will always get a latest value no matter when you start observing.
 
 <p>
-  This is very useful the React world as you can stick to a declarative way of
-  writing components and simply work with data without additional hurdles and
+  This is very useful in the React world as you can stick to a declarative way
+  of writing components and simply work with data without additional hurdles and
   boilerplate.
 </p>
 
@@ -31,7 +31,7 @@ function LogoutWidget() {
 }
 ```
 
-In a usual React world such a component cannot re-render itself based on change of `user.name`. The parent component needs to cause an update to child component and that's not very efficient.
+In a usual React paradigms (eg. useReducer) such a component cannot re-render itself based on change of `user.name`. The parent component needs to cause an update to child component and that's not very efficient.
 
 With observer in place, component itself can be notified about the change (as long as `user` is observable) and do a re-render without a parent ever knowing about it.
 

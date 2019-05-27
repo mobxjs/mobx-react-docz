@@ -4,45 +4,102 @@ menu: Manage state
 route: '/state-local'
 ---
 
-# Local component state
+import { Playground } from 'docz'
+
+# State of component
+
+**_since mobx-react-lite@1.3.0_**
 
 ```
-useLocalStore<T>(initializer: () => T): T
+useLocalStore<T, S>(initializer: () => T, source?: S): T
 ```
 
-Local observable state can be introduced by using the `useLocalStore` hook, that runs its initializer function once to create an observable store and keeps it around for a lifetime of a component. A quick example would be:
+Local observable state can be introduced by using the `useLocalStore` hook, that runs its initializer function once to create an observable store and keeps it around for a lifetime of a component.
 
-```tsx
-import { useLocalStore, useObserver } from "mobx-react-lite"
-
-const SmartTodo = () => {
-    const todo = useLocalStore(() => ({
-        title: "Test",
-        done: true,
-        toggle() {
-            todo.done = !todo.done
-        }
-    }))
-
-    return useObserver(() => (
-        <h1 onClick={todo.toggle}>
-            {todo.title} {todo.done ? "[DONE]" : "[TODO]"}
-        </h1>
-    ))
-})
-```
-
-> For a class based components feel free to use [decorator-based approach][decorators] for declaring state or popular [mobx-state-tree].
-
-With `useLocalStore`, all properties of the returned object will be made observable automatically, getters will be turned into computed properties, and methods will be bound to the store and apply [mobx transactions][actions] automatically. If new class instances are returned from the initializer, they will be kept as is.
-
-Even though `useLocalStore` is mostly beneficial for really complex local state, or to obtain more uniform code base, it's also possible to keep it in eg. React Context and make it available to other components. For really simple cases it's actually recommended to stick to `React.useState` which certainly comes with less ceremony than `useLocalStore`.
+All properties of the returned object will be made observable automatically, getters will be turned into computed properties, and methods will be bound to the store and apply [mobx transactions][actions] automatically. If new class instances are returned from the initializer, they will be kept as is.
 
 > Note that using a local store might conflict with future React features like concurrent rendering.
 
-In many cases it is possible to extract the initializer function to a function outside the component definition. Which makes it possible to test the store itself in a more straight-forward manner, and avoids creating the initializer closure on each re-render.
+import { SmartTodo } from '../examples/SmartTodo'
 
-It is important to realize that the store is created only once (_per component instance_)! It is not possible to specify dependencies to force re-creation, **nor should you directly be referring to props for the initializer function**, as changes in those won't propagate. See more [about state outsourcing](/state-outsourcing).
+```tsx
+import React from 'react'
+import { useLocalStore, useObserver } from 'mobx-react-lite'
+
+export const SmartTodo = () => {
+  const todo = useLocalStore(() => ({
+    title: 'Click to toggle',
+    done: false,
+    toggle() {
+      todo.done = !todo.done
+    },
+    get emoji() {
+      return todo.done ? '😜' : '🏃'
+    },
+  }))
+
+  return useObserver(() => (
+    <h3 onClick={todo.toggle}>
+      {todo.title} {todo.emoji}
+    </h3>
+  ))
+}
+```
+
+<Playground>
+  <SmartTodo />
+</Playground>
+
+## What about global store?
+
+The naming `useLocalStore` was chosen to indicate that store is created locally in the component. However, that doesn't mean you cannot pass such store around the component tree. In fact it's totally possible to tackle **global state management** with `useLocalStore` despite the naming. You can for example setup bunch of _local stores_, assemble them in one root object and pass it around the app with a help of the React Context.
+
+## Non observable dependencies
+
+_since mobx-react-lite@1.4.0_
+
+It is important to realize that the store is created only once (_per component instance_)! It is not possible to specify dependencies to force re-creation, **nor should you directly be referring to anything non-observable the initializer function**, as changes in those won't propagate.
+
+The `useLocalStore` supports passing second argument with plain object of anything non-observable you want to used in store derivations. It might be a value from props, `useContext` or even `useReducer` if you like to mix things up. The object you pass in the second arg should always have a same shape (no conditionals).
+
+import { Counter, MultiplierInput } from '../examples/Counter'
+
+<Playground>
+  <MultiplierInput>
+    {multiplier => <Counter multiplier={multiplier} initialCount={1} />}
+  </MultiplierInput>
+</Playground>
+
+```tsx
+import { observer, useLocalStore } from 'mobx-react-lite'
+
+export const Counter = observer(props => {
+  const store = useLocalStore(
+    // don't ever destructure source, it won't work
+    source => ({
+      count: props.initialCount,
+      get multiplied() {
+        // you shouldn't ever refer to props directly here, it won't see a change
+        return source.multiplier * store.count
+      },
+      inc() {
+        store.count += 1
+      },
+    }),
+    props, // note props passed here
+  )
+  return (
+    <>
+      <button id="inc" onClick={store.inc}>
+        {`Count: ${store.count}`}
+      </button>
+      <span>{store.multiplied}</span>
+    </>
+  )
+})
+```
+
+Note that internally the `useAsObservableSource` hook is used to wrap around passed object. If you don't need a actions or computed properties, feel free to use that hook directly. See more [about state outsourcing](/state-outsourcing).
 
 [decorators]: https://mobx.js.org/refguide/observable-decorator.html
 [actions]: https://mobx.js.org/refguide/action.html
