@@ -14,7 +14,7 @@ The state in MobX is represented by any [observable object][observable]. Any of 
 
 For advanced and more robust state the better choice might be [mobx-state-tree].
 
-Lastly we have shiny new Hooks to help on this journey like [useLocalStore].
+Lastly we have shiny new Hooks to help on this journey like [useLocalStore] _(not available in class components)_.
 
 ```tsx
 import { useLocalStore } from 'mobx-react-lite'
@@ -29,6 +29,16 @@ function CreatingState() {
     },
   }))
   return <Rendering simple={simpleState} big={bigState} local={localStore} />
+}
+
+class CreatingState extends React.PureComponent {
+  // or use constructor if class properties are not available for you
+  simpleState = observable.array([1, 2, 3])
+  render() {
+    // class component does not support any other way of
+    // keeping observable state within a component
+    return <Rendering simple={this.simpleState} />
+  }
 }
 ```
 
