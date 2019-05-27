@@ -1,5 +1,5 @@
 import React from 'react'
-import { observer, useAsObservableSource, useLocalStore } from 'mobx-react-lite'
+import { observer, useLocalStore } from 'mobx-react-lite'
 
 interface Props {
   initialCount?: number
@@ -8,16 +8,18 @@ interface Props {
 
 export const Counter = observer<Props>(
   ({ multiplier = 1, initialCount = 0 }) => {
-    const observableProps = useAsObservableSource({ multiplier })
-    const store = useLocalStore(() => ({
-      count: initialCount,
-      get multiplied() {
-        return observableProps.multiplier * store.count
-      },
-      inc() {
-        store.count += 1
-      },
-    }))
+    const store = useLocalStore(
+      source => ({
+        count: initialCount,
+        get multiplied() {
+          return source.multiplier * store.count
+        },
+        inc() {
+          store.count += 1
+        },
+      }),
+      { multiplier },
+    )
 
     return (
       <>

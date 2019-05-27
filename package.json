@@ -12,13 +12,12 @@
     "build": "docz build"
   },
   "resolutions": {
-    "mobx-react-lite": "1.3.2",
     "react-hot-loader": "4.8.4"
   },
   "dependencies": {
     "mobx": "^5.9.4",
     "mobx-react": "beta",
-    "mobx-react-lite": "1.3.2",
+    "mobx-react-lite": "1.4.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
