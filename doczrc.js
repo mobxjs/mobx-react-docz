@@ -22,6 +22,7 @@ export default {
     mode: 'dark',
     codemirrorTheme: 'blackboard',
     showPlaygroundEditor: false,
+    linesToScrollEditor: 50,
     colors: {
       codeColor: '#8DA6CE',
       codeBg: '#0C1021',
