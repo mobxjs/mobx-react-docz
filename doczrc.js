@@ -24,8 +24,10 @@ export default {
     showPlaygroundEditor: false,
     linesToScrollEditor: 50,
     colors: {
-      codeColor: '#8DA6CE',
+      codeColor: '#8DB6DE',
       codeBg: '#0C1021',
+      blockquoteColor: '#8DB6DE',
+      blockquoteBg: '#0C1021',
     },
   },
   plugins: [doczPluginNetlify()],
