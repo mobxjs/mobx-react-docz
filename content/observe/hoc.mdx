@@ -17,11 +17,17 @@ interface IObserverOptions {
 }
 ```
 
-> Use `mobx-react` if you need to observe class component. It doesn't support any of mentioned options.
+> Use `mobx-react` if you need to observe class component. It doesn't support any of mentioned options, though.
 
 The `observer` converts a component into a reactive component, which tracks which observables are used automatically and re-renders the component when one of these values changes.
 
 Along the observer capability, the `React.memo` is applied to the component. The general idea is, that observed components rarely need to re-render based on a complex props.
+
+> **⚠ WARNING**
+>
+> If component wrapped to `observer` depends on updates of [legacy context](https://reactjs.org/docs/legacy-context.html), the underlying `React.memo` will effectively prevent that update to propagate.
+>
+> Try to avoid using legacy context or alternatively use `Observer` component or `useObserver` hook.
 
 ```tsx
 import { observer, useLocalStore } from 'mobx-react-lite'
