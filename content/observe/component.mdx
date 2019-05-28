@@ -31,13 +31,17 @@ import ObservePerson from './component'
 import { Observer } from 'mobx-react'
 import { useLocalStore } from 'mobx-react-lite'
 
-function ObservePerson() {
+export function ObservePerson() {
   const person = useLocalStore(() => ({ name: 'John' }))
   return (
     <div>
-      {person.name}
-      <Observer>{() => <div>{person.name}</div>}</Observer>
-      <button onClick={() => (person.name = 'Mike')}>No! I am Mike</button>
+      {person.name} <i>I will never change my name</i>
+      <div>
+        <Observer>{() => <div>{person.name}</div>}</Observer>
+        <button onClick={() => (person.name = 'Mike')}>
+          I want to be Mike
+        </button>
+      </div>
     </div>
   )
 }

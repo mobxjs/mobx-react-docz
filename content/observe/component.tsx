@@ -7,7 +7,7 @@ export default function ObservePerson() {
     <div>
       {person.name} <i>I will never change my name</i>
       <div>
-        <Observer>{() => <div>person.name</div>}</Observer>
+        <Observer>{() => <div>{person.name}</div>}</Observer>
         {'   '}
         <button onClick={() => (person.name = 'Mike')}>
           I want to be Mike
