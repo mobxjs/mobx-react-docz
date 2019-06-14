@@ -23,7 +23,7 @@ import { useLocalStore } from 'mobx-react-lite'
 function CreatingState() {
   const simpleState = React.useRef(observable.array([1, 2, 3])).current
   const [bigState] = React.useState(createExpensiveStore)
-  const localState = useLocalState(() => ({
+  const localState = useLocalStore(() => ({
     count: 0,
     inc() {
       localState.count += 1
