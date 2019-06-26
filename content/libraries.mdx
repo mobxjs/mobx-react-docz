@@ -7,39 +7,39 @@ route: /libraries
 
 By the end of the year 2018 there was a unified way of using MobX in React world - library [mobx-react].
 
-Then the [React Hooks] came to the light. The [mobx-react-lite] was made to support this brave new world.
+Then the [React Hooks] came to the light. The [mobx-react-lite] was made to support this brave new world. It was great for several enthusiasts, but newcomers did (and still do) suffer.
 
-It was great for several enthusiasts, but newcomers did (and still do) suffer.
+**Use [mobx-react-lite] for fresh new project on React Hooks. For any older project continue reading.**
 
-**You cannot use [mobx-react-lite] with class components.**
-
-> In not so distant future the `mobx-react-lite` might be deprecated and become a `mobx-react@7`.
+> In not so distant future the `mobx-react-lite` might be deprecated and become a `mobx-react`.
 >
 > Don't worry, migration will be as easy as replacing one string for another.
 
 ## Cannot use React Hooks yet?
 
-🤷‍♂️ **Your code has class components while Hooks are out of reach?**
+🤷‍♂️ _Your code has class components while Hooks (React 16.8+) are out of reach?_
 
 👌 Just stay with `mobx-react@5`, no worries.
 
+## Migrating to React Hooks?
+
+🤷‍♂️ _Class components still do exists in your code, but you can (and want) to use Hooks as well?_
+
+👌Use `mobx-react@6` which includes `mobx-react-lite` and uses it automatically for function components.
+
+> The Provider/inject in `mobx-react@6` has been migrated to [React Context](https://reactjs.org/docs/context.html), however it might be removed in future versions completely. Consider [using Context](/recipes-context) directly.
+
 ## Fully embraced Hooks?
 
-🤷‍♂️ **No class components in your code?**
+🤷‍♂️ _No class components in your code?_
 
-👌 Use the `mobx-react-lite` directly, it got you covered.
+👌 Use the `mobx-react-lite` directly as a smaller and faster variant.
 
 > The library does not include way of propagating state (Provider, inject), see more about [accessing state](/state-how#accessing-a-state).
 
-## Migrating to React Hooks?
+# What version of `mobx`?
 
-🤷‍♂️ **Class components still do exists in your code, but there are Hooks as well?**
-
-👌The easiest would be to use `mobx-react@6`, but it's still in beta (as of May 2019) so it's probably better not to use in a important production deployments yet.
-
-👌The other way is to stick to stable `mobx-react@5` and use `mobx-react-lite` for a migrated components.
-
-> The Provider/inject from `mobx-react` is compatible with `mobx-react-lite` in case you prefer it over the [React Context](https://reactjs.org/docs/context.html)
+There are currently two maintained versions of `mobx`, the V4 (LTS) and V5. You can use either of those with any library mentioned above. The major difference is if you need to support IE11 which lacks ES6 Proxy support (MobX V5 depends on them).
 
 [mobx-react]: https://github.com/mobxjs/mobx-react
 [mobx-react-lite]: https://github.com/mobxjs/mobx-react-lite
