@@ -9,4 +9,13 @@ When using server side rendering, the components are rendered only once. Since c
 
 To avoid leaking memory, call `useStaticRendering(true)` when using server side rendering which essentially disables observer.
 
-> Note: Despite the naming, the function IS NOT HOOK. The name was decided long before the React Hooks were introduced. You should call it only once at the root of your server side code.
+```ts
+import { useStaticRendering } from 'mobx-react'
+
+// use whatever condition you want/need, this is just an example
+if (process.env.SSR) {
+  useStaticRendering(true)
+}
+```
+
+> Note: Despite the naming, the function IS NOT A REACT HOOK. The name was decided long before the React Hooks were introduced. You should call it only once at the root of your server side code.
