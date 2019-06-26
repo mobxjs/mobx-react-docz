@@ -23,28 +23,28 @@ export type TFriend = {
 }
 
 export function createStore() {
-  // storing variable in closure means you can access it in methods
-  // otherwise you would have to use `this` which doesn't work well with TypeScript
-  const store = {
+  // note the use of this which refers to observable instance of the store
+  return {
     friends: [] as TFriend[]
     makeFriend(name, isFavorite = false, isSingle = false) {
-      const oldFriend = store.friends.find(friend => friend.name === name)
+      const oldFriend = this.friends.find(friend => friend.name === name)
       if (oldFriend) {
         oldFriend.isFavorite = isFavorite
         oldFriend.isSingle = isSingle
       } else {
-        store.friends.push({ name, isFavorite, isSingle })
+        this.friends.push({ name, isFavorite, isSingle })
       }
     },
     get singleFriends() {
-      return store.friends.filter(friend => friend.isSingle)
+      return this.friends.filter(friend => friend.isSingle)
     },
   }
-  return store
 }
 
 export type TStore = ReturnType<typeof createStore>
 ```
+
+> For TypeScript user it's important to note that `this` will work correctly only when `noImplicitThis` or `strict` option is enabled in `tsconfig.json`.
 
 ### Setup context
 
