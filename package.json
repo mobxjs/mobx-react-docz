@@ -17,7 +17,7 @@
   "dependencies": {
     "mobx": "^5.9.4",
     "mobx-react": "beta",
-    "mobx-react-lite": "1.4.0",
+    "mobx-react-lite": "1.4.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
