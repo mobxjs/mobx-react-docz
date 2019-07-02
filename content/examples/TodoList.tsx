@@ -16,7 +16,8 @@ export const TodoList = observer<{ initialTodos: string[] }>(
           todo => store.todos[todo] === true,
         )
       },
-      addTodo: () => {
+      addTodo: evt => {
+        evt.preventDefault()
         store.todos[todoRef.current.value] = false
         todoRef.current.value = ''
       },
@@ -26,17 +27,17 @@ export const TodoList = observer<{ initialTodos: string[] }>(
     }))
 
     const renderTodo = (done: boolean) => todo => (
-      <Todo done={done} text={todo} onToggle={store.toggleTodo} />
+      <Todo key={todo} done={done} text={todo} onToggle={store.toggleTodo} />
     )
 
     return (
-      <div>
+      <form onSubmit={store.addTodo}>
         {store.pendingTodos.map(renderTodo(false))}
         {store.doneTodos.map(renderTodo(true))}
         <br />
         <input ref={todoRef} placeholder="I will..." />
-        <button onClick={store.addTodo}>Add todo</button>
-      </div>
+        <button>Add todo</button>
+      </form>
     )
   },
 )
