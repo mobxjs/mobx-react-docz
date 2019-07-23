@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/react": "16.8.23",
-    "@types/react-dom": "16.8.4",
+    "@types/react-dom": "16.8.5",
     "docz": "1.2.0",
     "docz-plugin-netlify": "1.1.4",
     "docz-theme-default": "1.2.0",
