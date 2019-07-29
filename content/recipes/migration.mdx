@@ -87,8 +87,8 @@ Alternatively, you can make a custom hook that takes care of mapping only. It ma
 function useUserData() {
   const { user, order } = useStores()
   return {
-    username: stores.user.name,
-    orderId: stores.order.id,
+    username: user.name,
+    orderId: order.id,
   }
 }
 
@@ -103,15 +103,15 @@ const UserOrderInfo = observer(() => {
 })
 ```
 
-However, be warned here. If you would attempt to destructure data, you would loose the reactivity. That is the general problem of MobX and many got burned by it. An alternative and safer approach can look like following.
+However, be warned here. If you would attempt to destructure `data`, you would lose the reactivity. That is the general problem of MobX and many got burned by it. An alternative and safer approach can look like following.
 
 ```tsx
 import { useObserver } from 'mobx-react'
 function useUserData() {
   const { user, order } = useStores()
   return useObserver(() => ({
-    username: stores.user.name,
-    orderId: stores.order.id,
+    username: user.name,
+    orderId: order.id,
   }))
 }
 
