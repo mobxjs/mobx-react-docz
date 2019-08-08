@@ -106,7 +106,7 @@ const UserOrderInfo = observer(() => {
 However, be warned here. If you would attempt to destructure `data`, you would lose the reactivity. That is the general problem of MobX and many got burned by it. An alternative and safer approach can look like following.
 
 ```tsx
-import { useObserver } from 'mobx-react'
+import { useObserver } from 'mobx-react-lite'
 function useUserData() {
   const { user, order } = useStores()
   return useObserver(() => ({
