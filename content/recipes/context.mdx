@@ -5,11 +5,11 @@ menu: Recipes
 
 # React Context
 
-If you are using `inject` in your code, please refer to [migration guide](/recipes-migration) first or learn [why inject is considered obsolete](/recipes-inject).
+If you are using `inject` in your code, please refer to the [migration guide](/recipes-migration) first, or learn [why inject is considered obsolete](/recipes-inject).
 
-[React Context][context] has replaced the [Legacy context][context-legacy] which was fairly awkward to use.
+[React Context][context] replaces the [Legacy context][context-legacy] which was fairly awkward to use.
 
-Let's make a small, but not so contrived example to show what this means for MobX.
+Let's make a small, but not-so-contrived example to show what this means for MobX.
 
 ### Create store
 
@@ -72,11 +72,11 @@ export const useStore = () => {
 }
 ```
 
-> You could drop a whole Provider dance and set created store as a default value of the `createContext`. The reference of the store object does not need to change, so it will work in most cases. However, you might still setup a Provider for tests to battle flakiness.
+> You could drop the whole Provider dance and set created store as a default value of the `createContext`. The reference of the store object does not need to change, so it will work in most cases. However, you might still setup a Provider for tests to battle flakiness.
 
 ### Making friends
 
-Now somewhere in the tree we have component like this.
+Now somewhere in the tree we have a component like this.
 
 ```tsx
 import React from 'react'
@@ -127,7 +127,7 @@ Perhaps you want to consider [mobx-state-tree] for declaring store shape? It com
 
 The power of React hooks allows you to create specific hooks for abstracting how is the store structured, eg. `useFriendsList` or `useOrderCart`.
 
-Such hooks are also great for mitigating long paths in bigger folder structure like seen in examples above.
+Such hooks are also great for mitigating long paths in a bigger folder structure as seen in the examples above.
 
 [context]: https://reactjs.org/docs/context.html
 [context-legacy]: https://reactjs.org/docs/legacy-context.html
