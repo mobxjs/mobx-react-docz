@@ -54,7 +54,6 @@ You can build on top of that and make a solution that fits your needs. For examp
 
 ### Why the hook is not exported from the package?
 
-It's becoming a good practice for packages to always hide the Context object and only export a relevant hook. Usually the reasons are to abstract some internals tucked away in context. However, in case of MobX, there is nothing to hide, it's stores you have added there.
 
 Think of it more like a tool for migration. The concept of Context is so simple that there is no added value of having it inside the library. If you ever manage to migrate a whole app to hooks, you can drop the Provider from `mobx-react` and use your own to gain even more control. Besides, it's inherently easier to correct types for own context (e.g., with TypeScript).
 
