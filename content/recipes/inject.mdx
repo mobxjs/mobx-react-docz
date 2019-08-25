@@ -15,7 +15,7 @@ Continue reading the [Migration guide](/recipes-migration) to learn more about h
 
 The main reason is that we have much better tools at our disposal now. The inject pattern is not wrong or broken in general, but it is rather limited and error-prone.
 
-In its simplest form `inject('myStore')` _(strings, meh!)_ the wrapped component props get modified and it is easy to lose track of what is coming into the component because the string argument does not give you any clue. This can be a source of annoying bugs, and maybe more importantly the pattern is incompatible with a typed language like Typescript. You can read more about the struggles with Typescript in this [unresolved issue](https://github.com/mobxjs/mobx-react/issues/256).
+In its simplest form `inject('myStore')` _(strings, meh!)_ the wrapped component props get modified and it's easy to lose track of what's coming into the component because the string argument does not give you any clue. This can be a source of annoying bugs, and maybe more importantly the pattern is incompatible with a typed language like Typescript. You can read more about the struggles with Typescript in this [unresolved issue](https://github.com/mobxjs/mobx-react/issues/256).
 
 An alternative variant of inject allows for reactive selections over the stores to pick the values that the component requires. It can be useful if reused over multiple components, but otherwise it brings similar confusion as the simple form of inject.
 
