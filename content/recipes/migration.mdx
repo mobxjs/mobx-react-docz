@@ -55,7 +55,7 @@ You can build on top of that and make a solution that fits your needs. For examp
 ### Why the hook is not exported from the package?
 
 
-Think of it more like a tool for migration. The concept of Context is so simple that there is no added value of having it inside the library. If you ever manage to migrate a whole app to hooks, you can drop the Provider from `mobx-react` and use your own to gain even more control. Besides, it's inherently easier to correct types for own context (e.g., with TypeScript).
+Think of it more like a tool for migration. The concept of Context is so simple that there is no added value of having it inside the library. If you ever manage to migrate a whole app to hooks, you can drop the Provider from `mobx-react` and use your own to gain even more control. Besides, it's inherently easier to correctly declare types for own context (e.g., with TypeScript).
 
 ### What about mapper function?
 
