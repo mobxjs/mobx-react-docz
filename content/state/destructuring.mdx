@@ -6,8 +6,29 @@ route: '/state-destruct'
 
 # Don't destructure
 
-MobX observable are objects (_and derivates_) only. When destructuring, any primitive variables will remain at latest values and won't be observable anymore. Use [boxed observables][boxed] to track primitive values exclusively or preferrably pass a whole state object around.
+MobX observables are objects only. When destructuring, any primitive variables will remain at latest values and won't be observable anymore. Use [boxed observables][boxed] to track primitive values exclusively or preferrably pass a whole state object around.
 
-_example pending_
+```tsx
+// do NOT do this, it breaks reactivity
+const {
+  userCateStore: { activeUserCate },
+} = useRootStore()
+const localStore = useLocalStore(() => ({
+  get dataSource() {
+    return activeUserCate
+  },
+}))
+```
+
+In such case you can either wrap a whole component to `observer` or destructure only down to nearest parent.
+
+```tsx
+const { userCateStore } = useRootStore()
+const localStore = useLocalStore(() => ({
+  get dataSource() {
+    return userCateStore.activeUserCate
+  },
+}))
+```
 
 [boxed]: https://mobx.js.org/refguide/boxed.html
