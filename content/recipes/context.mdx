@@ -53,7 +53,7 @@ Nothing spectacular about it really, better to read [React docs][context] if you
 ```tsx
 import React from 'react'
 import { createStore, TStore } from './createStore'
-import { useLocalStore } from 'mobx-react-lite'
+import { useLocalStore } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 const storeContext = React.createContext<TStore | null>(null)
 

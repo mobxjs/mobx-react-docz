@@ -24,7 +24,7 @@ import { SmartTodo } from '../examples/SmartTodo'
 
 ```tsx
 import React from 'react'
-import { useLocalStore, useObserver } from 'mobx-react-lite'
+import { useLocalStore, useObserver } from 'mobx-react' // 6.x
 
 export const SmartTodo = () => {
   const todo = useLocalStore(() => ({
@@ -56,7 +56,7 @@ The naming `useLocalStore` was chosen to indicate that store is created locally 
 
 ## Non observable dependencies
 
-_since mobx-react-lite@1.4.0_
+_since mobx-react-lite@1.4.0 or mobx-react@6.0_
 
 It is important to realize that the store is created only once (_per component instance_)! It is not possible to specify dependencies to force re-creation, **nor should you directly be referring to anything non-observable the initializer function**, as changes in those won't propagate.
 
@@ -71,7 +71,7 @@ import { Counter, MultiplierInput } from '../examples/Counter'
 </Playground>
 
 ```tsx
-import { observer, useLocalStore } from 'mobx-react-lite'
+import { observer, useLocalStore } from 'mobx-react' // 6.x
 
 export const Counter = observer(props => {
   const store = useLocalStore(

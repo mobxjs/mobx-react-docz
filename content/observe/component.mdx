@@ -10,7 +10,7 @@ route: '/observer-component'
 <Observer>{renderFn}</Observer>
 ```
 
-> Works the same way with `mobx-react` or `mobx-react-lite` library. No exception for class components.
+> Works the same way with `mobx-react` or `mobx-react-lite` library. No exceptions for class components.
 
 Is a React component, which applies observer to an anonymous region in your component.
 
@@ -20,16 +20,8 @@ The rendering in the function will be tracked and automatically re-rendered when
 
 This can come in handy when needing to pass render function to external components (for example the React Native listview), or if you want to observe only relevant parts of the output for a performance reasons.
 
-import { Playground } from 'docz'
-import ObservePerson from './component'
-
-<Playground>
-  <ObservePerson />
-</Playground>
-
 ```tsx
-import { Observer } from 'mobx-react'
-import { useLocalStore } from 'mobx-react-lite'
+import { Observer, useLocalStore } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 export function ObservePerson() {
   const person = useLocalStore(() => ({ name: 'John' }))
@@ -47,12 +39,19 @@ export function ObservePerson() {
 }
 ```
 
+import { Playground } from 'docz'
+import ObservePerson from './component'
+
+<Playground>
+  <ObservePerson />
+</Playground>
+
 ## Nesting caveat
 
 Observer can see observables only within its own render function. If you use another render prop component, it won't be able to observe changes. Consider following example.
 
 ```tsx
-import { Observer } from 'mobx-react'
+import { Observer } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 function ObservePerson() {
   return (
@@ -68,7 +67,7 @@ function ObservePerson() {
 You need to switch it around to work around the problem. Or use React Hooks if possible.
 
 ```tsx
-import { Observer } from 'mobx-react'
+import { Observer } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 function ObservePerson() {
   return (

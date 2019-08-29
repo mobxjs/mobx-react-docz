@@ -39,7 +39,7 @@ Much better way is to `useAsObservableSource` ([learn more](/state-outsourcing))
 ```ts
 import React from 'react'
 import { reaction } from 'mobx'
-import { useAsObservableSource } from 'mobx-react-lite'
+import { useAsObservableSource } from 'mobx-react' // 6.x
 
 function useFetcher<T>(
   resource: string,
@@ -78,9 +78,9 @@ function useFetcher<T>(
 With the help of `useFetcher` hook we defined above we can showcase another approach for tackling side effects.
 
 ```tsx
-const BookDetail = () => {
+const BookDetail = ({ bookId }) => {
   const store = useStore()
-  const result = useFetcher<TBook>('/books')
+  const result = useFetcher<TBook>(`/books/${bookId}`)
 
   React.useEffect(() => {
     document.title = `${result.title} - ${store.sectionName}`
@@ -102,13 +102,11 @@ const BookDetail = () => {
 }
 ```
 
-Notice that even though `useEffect` references observable value we don't treat it is such simply because it's stored there mostly for a convenience. In case you do expect its value to be changed, you would have to wrap it to `autorun`.
-
-> Using `observer` HOC here would not solve anything because it cannot see inside the `useEffect` callback.
-
 There are no dependencies for `useEffect` meaning it will run on every render. It's definitely ok in this case because `useFetcher` is a major cause of re-rendering of the component.
 
-However, if the `sectionName` would be dynamic, you would need to `useAsObservableSource` again or perhaps set the fetcher result inside the store to make it observable.
+However, if the `sectionName` would be changing on its own, the `autorun` would need to be used again to capture observable nature of it.
+
+> Using `observer` HOC here would not solve anything because it cannot see inside the `useEffect` callback.
 
 [useeffect]: https://reactjs.org/docs/hooks-reference.html#useeffect
 [reaction]: https://mobx.js.org/refguide/reaction.html

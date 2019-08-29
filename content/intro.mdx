@@ -14,7 +14,7 @@ import { TodoList } from './examples/TodoList'
 
 Check out the example of the amazing Todo application or continue reading on [why to observe](/observe-why) or [how to manage state](/state-how).
 
-Maintaining legacy code? Have a look at [our migration guide](/recipes-migration).
+Do you want to migrate toward Hooks? Have a look at [our migration guide](/recipes-migration).
 
 <Playground>
   <TodoList
@@ -24,7 +24,7 @@ Maintaining legacy code? Have a look at [our migration guide](/recipes-migration
 
 ```tsx
 import React from 'react'
-import { observer, useLocalStore } from 'mobx-react-lite'
+import { observer, useLocalStore } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 export const TodoList = observer<{ initialTodos: string[] }>(
   ({ initialTodos }) => {

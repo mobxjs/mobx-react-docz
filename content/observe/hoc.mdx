@@ -30,7 +30,7 @@ Along the observer capability, the `React.memo` is applied to the component. The
 > Try to avoid using legacy context or alternatively use `Observer` component or `useObserver` hook.
 
 ```tsx
-import { observer, useLocalStore } from 'mobx-react-lite'
+import { observer, useLocalStore } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 export const Counter = observer<Props>(props => {
   const store = useLocalStore(() => ({

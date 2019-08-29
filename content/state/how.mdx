@@ -18,7 +18,7 @@ Lastly we have shiny new Hooks to help on this journey like [useLocalStore] _(no
 
 ```tsx
 import { observable } from 'mobx'
-import { useLocalStore } from 'mobx-react-lite'
+import { useLocalStore } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 function CreatingState() {
   const simpleState = React.useRef(observable.array([1, 2, 3])).current

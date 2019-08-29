@@ -24,7 +24,7 @@ It allows you to use an observer like behaviour, but still allowing you to optim
 One good thing about this is that if any hook changes an observable for some reason then the component won't rerender twice unnecessarily. (_example pending_)
 
 ```tsx
-import { useObserver, useLocalStore } from 'mobx-react-lite'
+import { useObserver, useLocalStore } from 'mobx-react' // 6.x or mobx-react-lite@1.4.0
 
 function Person() {
   const person = useLocalStore(() => ({ name: 'John' }))
