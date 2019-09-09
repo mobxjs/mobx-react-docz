@@ -21,7 +21,7 @@ The value passed to `useAsObservableSource` should always be an object. Only sha
 
 The object returned by `useAsObservableSource`, although observable, should be considered read-only for all practical purposes.
 
-> Tip: for optimal performance it is recommend to not use `useAsObservableSource` together on the same component as useObserver (or observer), as it might trigger double renderings. Instead, use [Observer component](/observe-component).
+> Tip: for optimal performance it is recommend to not use `useAsObservableSource` together on the same component as useObserver (or observer), as it might trigger double renderings. Instead, use [Observer component](/observer-component).
 
 ```tsx
 import { useAsObservableSource } from 'mobx-react' // 6.x or mobx-react-lite@1.3.0
