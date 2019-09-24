@@ -84,16 +84,16 @@ import { useStore } from '../../../store'
 
 export const FriendsMaker = observer(() => {
   const store = useStore()
-  const onSubmit = React.useCallback(({ name, favorite, single }) => {
+  const onSubmit = ({ name, favorite, single }) =>
     store.makeFriend(name, favorite, single)
-  }, [])
+
   return (
-    <Form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       Total friends: {store.friends.length}
       <input type="text" id="name" />
       <input type="checkbox" id="favorite" />
       <input type="checkbox" id="single" />
-    </Form>
+    </form>
   )
 })
 ```
