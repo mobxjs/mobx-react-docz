@@ -57,25 +57,13 @@ show up as `wrappedComponent` or `Memo` in the React DevTools or in console log 
 For a better developer experience, there is a Babel macro included in the `mobx-react-lite` package, which
 transforms components wrapped with `observer` to retain their name.
 
-In order to use the macro, install [`babel-plugin-macros`](https://github.com/kentcdodds/babel-plugin-macros).
-
-```
-npm install --save-dev babel-plugin-macros
-```
-
-Next add the `babel-plugin-macros` plugin to your Babel config (`.babelrc`):
-
-```
-{
-  "plugins": ["macros"]
-}
-```
-
-Now you can use the macro simply by changing the import declarations from `mobx-react-lite` to `mobx-react-lite/macro`.
+To use the macro install [`babel-plugin-macros`](https://github.com/kentcdodds/babel-plugin-macros),
+then simply change your import declarations from `mobx-react-lite` to `mobx-react-lite/macro`.
 
 ```tsx
 import { observer, useLocalStore } from 'mobx-react-lite/macro'
 ```
+
 
 
 
