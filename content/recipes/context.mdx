@@ -25,7 +25,7 @@ export type TFriend = {
 export function createStore() {
   // note the use of this which refers to observable instance of the store
   return {
-    friends: [] as TFriend[]
+    friends: [] as TFriend[],
     makeFriend(name, isFavorite = false, isSingle = false) {
       const oldFriend = this.friends.find(friend => friend.name === name)
       if (oldFriend) {
