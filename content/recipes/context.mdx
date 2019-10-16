@@ -205,10 +205,10 @@ Finally, let's make our custom `useStores` hook to access the exported `storesCo
 
 ```tsx
 // src/hooks/user-store.tsx
-import { useContext } from 'react'
+import React from 'react'
 import { storesContext } from '../contexts'
 
-export const useStores = () => useContext(storesContext)
+export const useStores = () => React.useContext(storesContext)
 ```
 
 Now we're ready to start consuming and using our stores.
