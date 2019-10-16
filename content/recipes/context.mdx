@@ -132,3 +132,125 @@ Such hooks are also great for mitigating long paths in a bigger folder structure
 [context]: https://reactjs.org/docs/context.html
 [context-legacy]: https://reactjs.org/docs/legacy-context.html
 [mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree
+
+## Multiple global stores
+
+In your application, you might need to have multiple global stores in order to better separate your different concerns.
+Example stores could be, `CurrentUserStore`, `ShoppingCartStore`, `UserThemeStore`, etc. With the use of React Context and Hooks, we can make this pretty simple and scalable.
+
+In this section, we'll make a custom hook called `useStores` that we can use to destructure the store or stores that we need within our given application components.
+
+Our example application will have two stores, `CounterStore` and `ThemeStore`.
+
+```tsx
+// src/stores/counter-store.tsx
+import { observable, action, computed } from 'mobx'
+
+class CounterStore {
+  @observable
+  count = 0
+
+  @action
+  increment() {
+    this.count++
+  }
+
+  @action
+  decrement() {
+    this.count--
+  }
+
+  @computed
+  get doubleCount() {
+    return this.count * 2
+  }
+}
+
+export const counterStore = new CounterStore()
+```
+
+```tsx
+// src/stores/theme-store.tsx
+import { observable, action } from 'mobx'
+
+class ThemeStore {
+  @observable
+  theme = 'light'
+
+  @action
+  setTheme(newTheme: string) {
+    this.theme = newTheme
+  }
+}
+
+export const themeStore = new ThemeStore()
+```
+
+Next we want to make a `storesContext` that will contain each of our global stores.
+
+```tsx
+// src/contexts/index.tsx
+import { createContext } from 'react'
+import { counterStore, themeStore } from '../stores'
+
+export const storesContext = createContext({
+  counterStore,
+  themeStore,
+})
+```
+
+Last but not least, let's make our custom `useStores` hook to access the exported `storesContext` value.
+
+```tsx
+// src/hooks/user-store.tsx
+import { useContext } from 'react'
+import { storesContext } from '../contexts'
+
+export const useStores = () => useContext(storesContext)
+```
+
+Now we're ready to start consuming and using our stores.
+
+```tsx
+import React, { FC } from 'react'
+import { observer } from 'mobx-react'
+import { useStores } from '../hooks/use-stores'
+
+// src/components/Counter.tsx
+export const Counter: FC = observer(() => {
+  const { counterStore } = useStores()
+
+  return (
+    <>
+      <div>{counterStore.count}</div>
+      <button onClick={() => counterStore.increment()}>++</button>
+      <button onClick={() => counterStore.decrement()}>--</button>
+    </>
+  )
+})
+
+// src/components/ThemeToggler.tsx
+export const ThemeToggler: FC = observer(() => {
+  const { themeStore } = useStores()
+
+  return (
+    <>
+      <div>{themeStore.theme}</div>
+      <button onClick={() => themeStore.setTheme('light')}>
+        set theme: light
+      </button>
+      <button onClick={() => themeStore.setTheme('dark')}>
+        set theme: dark
+      </button>
+    </>
+  )
+})
+
+// src/App.tsx
+const App: FC = () => (
+  <main>
+    <Counter />
+    <ThemeToggler />
+  </main>
+)
+```
