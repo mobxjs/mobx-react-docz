@@ -58,9 +58,9 @@ The naming `useLocalStore` was chosen to indicate that store is created locally 
 
 _since mobx-react-lite@1.4.0 or mobx-react@6.0_
 
-It is important to realize that the store is created only once (_per component instance_)! It is not possible to specify dependencies to force re-creation, **nor should you directly be referring to anything non-observable the initializer function**, as changes in those won't propagate.
+It is important to realize that the store is created only once (_per component instance_)! It is not possible to specify dependencies to force re-creation, **nor should you directly be referring to anything non-observable in the initializer function**, as changes in those won't propagate.
 
-The `useLocalStore` supports passing second argument with plain object of anything non-observable you want to used in store derivations. It might be a value from props, `useContext` or even `useReducer` if you like to mix things up. The object you pass in the second arg should always have a same shape (no conditionals).
+The `useLocalStore` supports passing a second argument with a plain object of anything non-observable you want to be used in store derivations. It might be a value from props, `useContext` or even `useReducer` if you like to mix things up. The object you pass in the second arg should always have a same shape (no conditionals).
 
 import { Counter, MultiplierInput } from '../examples/Counter'
 
@@ -99,7 +99,7 @@ export const Counter = observer(props => {
 })
 ```
 
-Note that internally the `useAsObservableSource` hook is used to wrap around passed object. If you don't need a actions or computed properties, feel free to use that hook directly. See more [about state outsourcing](/state-outsourcing).
+Note that internally the `useAsObservableSource` hook is used to wrap around passed object. If you don't need actions or computed properties, feel free to use that hook directly. See more [about state outsourcing](/state-outsourcing).
 
 [decorators]: https://mobx.js.org/refguide/observable-decorator.html
 [actions]: https://mobx.js.org/refguide/action.html
