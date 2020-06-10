@@ -1,0 +1,190 @@
+---
+name: Basics
+route: /basics
+---
+
+import { Playground } from 'docz'
+
+# Basic Introduction
+
+MobX lets you create observable state. This library, `mobx-react` integrates it
+with React. It provides a way for you to create React components that respond
+to MobX state changes.
+
+> Frameworks such as `mobx-state-tree` and `mobx-keystone` exist that build on
+> top of MobX to offer a higher-level way to create observable models. These models
+> give you additional properties, such as automatic serialization to JSON. This
+> introduction uses plain MobX models. The principles of React
+> integration are the same.
+
+Let's consider MobX models for animals in a zoo, where each animal
+has a certain amount of energy. If the energy is below 50, the animal
+is hungry. Animals can be fed to increase their energy levels:
+
+> These code examples use TypeScript. If you use plain JavaScript you
+> can skip the type declarations.
+
+```tsx
+import { observable, action, computed } from 'mobx'
+
+class Animal {
+  name: string
+  species: string
+  @observable energy: number
+
+  constructor(name: string, species: string, energy: number = 100) {
+    this.name = name
+    this.species = species
+    this.energy = energy
+  }
+
+  @action
+  timePasses() {
+    this.energy -= 10
+  }
+
+  @action
+  feed() {
+    this.energy += 50
+    if (this.energy > 100) {
+      this.energy = 100
+    }
+  }
+
+  @computed
+  get isHungry() {
+    return this.energy < 50
+  }
+}
+
+class Zoo {
+  @observable animals: Animal[] = []
+
+  @action
+  addAnimal(animal: Animal) {
+    this.animals.push(animal)
+  }
+}
+```
+
+We haven't used anything except plain MobX yet in this example. Now let's
+create a React component to show information for an animal:
+
+> These examples work with `mobx-react-lite` as well. `mobx-react` expands
+> `mobx-react-lite` to have support for React class components as well.
+> If you are creating a new project that only uses function components, you
+> can use `mobx-react-lite`.
+
+```tsx
+import { Component } from 'react'
+import { observer } from 'mobx-react'
+
+const AnimalView = observer(({ animal }: { animal: Animal }) => {
+  return (
+    <div>
+      {animal.name} is of species {animal.species} and is{' '}
+      {animal.isHungry ? 'hungry' : 'not hungry'}.
+    </div>
+  )
+})
+```
+
+Let's create an instance of `Animal`:
+
+```tsx
+const fred = new Animal('Fred', 'hippo')
+```
+
+We can now render `fred`:
+
+```tsx
+<AnimalView animal={fred} />
+```
+
+The only special thing that `AnimalView` does compared to a normal React
+function component is that it is wrapped in `observer` from `mobx-react`. This
+makes `AnimalView` automatically rerender itself, if anything that it observes
+changes. In this case the observable information is the computed property
+`isHungry`, which in turn it based on the observable property `energy`. So only
+if `isHungry` changes, `AnimalView` automatically rerenders itself.
+
+Wrapping a component in `observer` is cheap, so it's recommended to just wrap
+all your components in `observer` in a `mobx-react` application.
+
+Note that MobX can only observe properties, not simple values like a `string`
+or a `number`. So if you write your component to only receive simple values, it
+does not benefit from observability:
+
+```tsx
+import { Component } from 'react'
+import { observer } from 'mobx-react'
+
+// Uses observer() but does not benefit from observability
+const NonObservingAnimalView = observer(
+  ({
+    name,
+    species,
+    isHungry,
+  }: {
+    name: string
+    species: string
+    isHungry: boolean
+  }) => {
+    return (
+      <div>
+        {name} is of species {species} and is{' '}
+        {isHungry ? 'hungry' : 'not hungry'}.
+      </div>
+    )
+  },
+)
+```
+
+The component `NonObservingAnimalView` works perfectly if it is used within
+another component that is also an observer, but it will re-render each and
+every time, because MobX cannot see whether `name`, `species` or `isHungry` are
+changed. Our original `AnimalView` _does_ observe it, because it can track
+property accesses.
+
+MobX does support observable arrays, observable
+objects and observable maps, so those _can_ be observed for changes by
+a React component. We demonstrate that here with `animals`:
+
+```tsx
+import { Component } from 'react'
+import { observer } from 'mobx-react'
+
+const AnimalsView = observer(({ animals }: { animals: Animal[] }) => {
+  return (
+    <ul>
+      {animals.map(animal => (
+        <ul>
+          <AnimalView key={animal.name} animal={animal} />
+        </ul>
+      ))}
+    </ul>
+  )
+})
+```
+
+If we invoke this with an observable array of animals, the React component
+automatically re-renders each time the array changes (by adding or removing
+items) or if any item in that array itself changes.
+
+Instances of our
+`Zoo` class have an `animals` property that is observable, so let's use
+that:
+
+```tsx
+const wilma = new Animal('Wilma', 'penguin')
+
+const zoo = new Zoo()
+zoo.addAnimal(fred)
+zoo.addAnimal(wilma)
+```
+
+We can now render our animals:
+
+```tsx
+<AnimalsView animals={zoo.animals} />
+```
