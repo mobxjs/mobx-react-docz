@@ -15,7 +15,9 @@ to MobX state changes.
 > top of MobX to offer a higher-level way to create observable models. These models
 > give you additional properties, such as automatic serialization to JSON. This
 > introduction uses plain MobX models. The principles of React
-> integration are the same.
+> integration are the same, as these libraries are built with MobX.
+
+## MobX models
 
 Let's consider MobX models for animals in a zoo, where each animal
 has a certain amount of energy. If the energy is below 50, the animal
@@ -67,13 +69,10 @@ class Zoo {
 }
 ```
 
-We haven't used anything except plain MobX yet in this example. Now let's
-create a React component to show information for an animal:
+## A React component that observes
 
-> These examples work with `mobx-react-lite` as well. `mobx-react` expands
-> `mobx-react-lite` to have support for React class components as well.
-> If you are creating a new project that only uses function components, you
-> can use `mobx-react-lite`.
+We haven't used anything except plain MobX in this example. Now let's
+create a React component to show information for an animal:
 
 ```tsx
 import { Component } from 'react'
@@ -89,6 +88,11 @@ const AnimalView = observer(({ animal }: { animal: Animal }) => {
 })
 ```
 
+> These examples work with `mobx-react-lite` too. `mobx-react` expands
+> `mobx-react-lite` to have support for React class components. If you are
+> creating a new project that only uses React function components, you can use
+> `mobx-react-lite`.
+
 Let's create an instance of `Animal`:
 
 ```tsx
@@ -103,13 +107,18 @@ We can now render `fred`:
 
 The only special thing that `AnimalView` does compared to a normal React
 function component is that it is wrapped in `observer` from `mobx-react`. This
-makes `AnimalView` automatically rerender itself, if anything that it observes
+makes `AnimalView` automatically re-render itself if anything that it observes
 changes. In this case the observable information is the computed property
-`isHungry`, which in turn it based on the observable property `energy`. So only
-if `isHungry` changes, `AnimalView` automatically rerenders itself.
+`isHungry`, which in turn it based on the observable property `energy`.
+`AnimalView` automatically re-renders itself only if `isHungry` changes. You
+don't need to do anything else to make that happen.
 
-Wrapping a component in `observer` is cheap, so it's recommended to just wrap
-all your components in `observer` in a `mobx-react` application.
+When you wrap your React component in `observer`, it tracks any observable
+property or object you access during rendering it, and reacts to any changes to
+these. It won't react to any changes in observable properties you _don't_
+directly or indirectly use during rendering.
+
+## When do observers observe?
 
 Note that MobX can only observe properties, not simple values like a `string`
 or a `number`. So if you write your component to only receive simple values, it
@@ -141,10 +150,17 @@ const NonObservingAnimalView = observer(
 ```
 
 The component `NonObservingAnimalView` works perfectly if it is used within
-another component that is also an observer, but it will re-render each and
-every time, because MobX cannot see whether `name`, `species` or `isHungry` are
-changed. Our original `AnimalView` _does_ observe it, because it can track
-property accesses.
+another component that receives an `Animal` instance and is also an observer,
+but it re-render each and every time, because MobX cannot see whether
+`name`, `species` or `isHungry` are changed. Our original `AnimalView` _does_
+observe it, because it can track property accesses.
+
+Wrapping a component in `observer` is cheap, so if you use MobX with react,
+it's recommended to just wrap all your components in `observer`, even if the
+component does not use any observable information yet. There is no need
+distinguish between React components that observe and do not observe in this.
+
+## Observable arrays
 
 MobX does support observable arrays, observable
 objects and observable maps, so those _can_ be observed for changes by
@@ -167,10 +183,6 @@ const AnimalsView = observer(({ animals }: { animals: Animal[] }) => {
 })
 ```
 
-If we invoke this with an observable array of animals, the React component
-automatically re-renders each time the array changes (by adding or removing
-items) or if any item in that array itself changes.
-
 Instances of our `Zoo` class have an `animals` property that is observable, so
 let's use that:
 
@@ -187,3 +199,127 @@ We can now render our animals:
 ```tsx
 <AnimalsView animals={zoo.animals} />
 ```
+
+`AnimalsView` automatically re-renders itself whenever you change the array, in
+this case by using `Zoo.addAnimal`. The individual `AnimalView` re-renders
+itself as before when any observed properties the underlying object change,
+which in this case is its `isHungry` status.
+
+## Local component state with `useLocalStore`
+
+So far we have discussed observable model state, where the models live outside
+of the React components. It is useful to have component-specific state however.
+This is state that only makes sense within that component, is typically very UI
+specific, and there is no reason to specify this part of your application's
+models.
+
+This is useful for "temporary data", such as for instance the text that a user
+is currently entering into an input widget. If the user then performs a special
+action such as pressing a button' this text may be saved into an actual model
+instance. And depending on your application's architecture you can even manage
+all your state this way.
+
+This is the MobX equivalent of component state as you'd use with the `useState`
+hook or the `setState` method in case of class components. Unlike React the
+`useState` hook, the MobX local store is observable.
+
+Here is an example where we add an animal to a zoo using a form:
+
+```tsx
+import { Component } from 'react'
+import { observer } from 'mobx-react'
+
+const AddAnimalView = observer(({ zoo }: { zoo: Zoo }) => {
+  const local = useLocalStore(() => ({
+    name: '',
+    species: '',
+  }))
+
+  const handleAdd = () => {
+    zoo.addAnimal(new Animal(local.name, local.species))
+    // clear input again after adding
+    local.name = ''
+    local.species = ''
+  }
+
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    local.name = e.target.value
+  }
+
+  const handleChangeSpecies = (e: React.ChangeEvent<HTMLInputElement>) => {
+    local.species = e.target.value
+  }
+
+  return (
+    <div>
+      <div>
+        Name:
+        <input type="text" value={local.name} onChange={handleChangeName} />
+      </div>
+      <div>
+        Species:
+        <input
+          type="text"
+          value={local.species}
+          onChange={handleChangeSpecies}
+        />
+      </div>
+      <button onClick={handleAdd}>Add animal</button>
+    </div>
+  )
+})
+```
+
+Here we define an object called `local` with two observable properties, `name`
+and `species`. We use the React [controlled
+components](https://reactjs.org/docs/forms.html#controlled-components)
+technique to allow the user to edit these properties. As you can see, this
+simply involves mutating the local state directly. We also have an `Add animal`
+button which uses the local state to modify the zoo using the `addAnimal`
+action. It then needs to reset the local state again to allow the user to
+enter another animal.
+
+XXX interaction with strict mode, see https://github.com/mobxjs/mobx-react-lite/issues/235
+if strict mode is the recommended story, what would we recommend instead of
+use useLocalStore?
+
+## Application organization
+
+In these examples we described how you can create observer React components
+that take observable instances as props, and this is a good pattern to follow.
+
+But where do you get these props from? Often they can be retrieved from
+_other_ observable objects. Let's consider `ZooView`:
+
+```tsx
+import { Component } from 'react'
+import { observer } from 'mobx-react'
+
+const ZooView = observer(({ zoo }: { zoo: Zoo }) => {
+  return (
+    <div>
+      <AnimalsView animals={zoo.animals} />
+      <AddAnimalView zoo={zoo} />
+    </div>
+  )
+})
+```
+
+Where does `AnimalsView` get its `animals` prop from? From the `zoo` in
+`ZooView`. Where does `AnimalView` get its `animal` prop? From the each animal
+in the `AnimalsView`. We also pass `zoo` into `AddAnimalView` directly.
+
+But where would we put the `zoo`? One simple approach is to make it a global in
+your application, and simply import it when you need it.
+
+Often this is sufficient. Consider a `Locale` MobX model that describes information
+about your site's Locale. You can simply maintain the current locale as
+a global and import it wherever you need it.
+
+As an alternative you can create an observable model as part of component state
+and then pass it along as a prop.
+
+If you need to have access to a MobX model instance in many components but you
+still want different sections of your UI to use a _different_ instance, you can
+pass in a MobX model instance with [React's context
+mechanism](https://reactjs.org/docs/context.html).
