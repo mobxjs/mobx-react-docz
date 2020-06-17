@@ -30,5 +30,6 @@ export default {
       blockquoteBg: '#0C1021',
     },
   },
+  menu: ['Introduction', 'Basics', 'Libraries'],
   plugins: [doczPluginNetlify()],
 }
