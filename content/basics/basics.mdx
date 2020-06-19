@@ -7,17 +7,16 @@ import { Playground } from 'docz'
 
 # Basic Introduction
 
-[MobX](https://mobx.js.org/README.html) lets you create observable state. This
-library, `mobx-react` integrates it with React. It provides a way for you to
-create React components that respond to MobX state changes.
+[MobX](https://mobx.js.org) lets you create observable state. This library,
+`mobx-react` integrates it with React. It provides a way for you to make React
+components respond to MobX state changes.
 
 > Frameworks such as [mobx-state-tree](https://mobx-state-tree.js.org) and
 > [mobx-keystone](https://mobx-keystone.js.org/) build on
 > top of MobX to offer a higher-level way to create observable models. These models
 > give you additional properties, such as automatic serialization to JSON. This
-> introduction uses plain MobX models. The principles of React
-> integration are the same for these advanced libraries are the same
-> as they are also built with MobX.
+> introduction uses plain MobX models. Because these advanced libraries are
+> also built with MobX, the principles for React integration are the same.
 
 ## MobX models
 
@@ -207,13 +206,19 @@ this case by using `Zoo.addAnimal`. The individual `AnimalView` re-renders
 itself as before when any observed properties the underlying object change,
 which in this case is its `isHungry` status.
 
+Be aware that if you forget to wrap `AnimalsView` with `observer` it won't be
+able to detect when you add (or remove) from the array, even if the parent
+React component that uses `AnimalsView` is itself wrapped with `observer`. So
+as mentioned previously, don't worry and just use `observer` for all your
+components!
+
 ## Local component state with `useLocalStore`
 
 So far we have discussed observable model state, where the models live outside
-of the React components. It is useful to have component-specific state however.
-This is state that only makes sense within that component, is typically very UI
-specific, and there is no reason to specify this part of your application's
-models.
+of the React components. It is often useful to have component-specific state as
+well. Component-specific state is state that only makes sense within that React
+component. It is typically very UI specific, and there is no reason to make
+this state part of your application's models.
 
 This is useful for "temporary data", such as for instance the text that a user
 is currently entering into an input widget. If the user then performs a special
@@ -224,6 +229,11 @@ all your state this way.
 This is the MobX equivalent of component state as you'd use with the `useState`
 hook or the `setState` method in case of class components. Unlike React the
 `useState` hook, the MobX local store is observable.
+
+Just like React's `useState` you can actually pass component-specific state
+down to child components or set it up as a React Context -- it doesn't
+_have_ to be restricted to this component only. You could set up an entire
+application using `useLocalStore` only.
 
 Here is an example where we add an animal to a zoo using a form:
 
@@ -311,17 +321,12 @@ Where does `AnimalsView` get its `animals` prop from? From the `zoo` in
 `ZooView`. Where does `AnimalView` get its `animal` prop? From the each animal
 in the `AnimalsView`. We also pass `zoo` into `AddAnimalView` directly.
 
-But where would we put the `zoo`? One simple approach is to make it a global in
-your application, and simply import it when you need it.
+We recommend using props to pass instances around to the React components that
+need them. It ensures your components are loosely-coupled, and it makes it
+easier to write an automated test for them.
 
-Often this is sufficient. Consider a `Locale` MobX model that describes information
-about your site's Locale. You can simply maintain the current locale as
-a global and import it wherever you need it.
-
-As an alternative you can create an observable model as part of component state
-and then pass it along as a prop.
-
-If you need to have access to a MobX model instance in many components but you
-still want different sections of your UI to use a _different_ instance, you can
-pass in a MobX model instance with [React's context
-mechanism](https://reactjs.org/docs/context.html).
+But it has to start somewhere. Where would we put `zoo`? One simple approach is
+to make it a global in your application, and simply import it when you need it
+at the top of your React application. Frameworks like `mobx-state-tree` and
+`mobx-keystone` offer more sophisticated patterns to maintain such a root
+store.
