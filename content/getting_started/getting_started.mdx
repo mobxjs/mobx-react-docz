@@ -8,8 +8,8 @@ import { Playground } from 'docz'
 # Basic Introduction
 
 [MobX](https://mobx.js.org) lets you create observable state. This library,
-`mobx-react` integrates it with React. It provides a way for you to make React
-components respond to MobX state changes.
+`mobx-react`, provides bindings to make React components respond to MobX
+state changes.
 
 > Frameworks such as [mobx-state-tree](https://mobx-state-tree.js.org) and
 > [mobx-keystone](https://mobx-keystone.js.org/) build on
@@ -110,7 +110,7 @@ The only special thing that `AnimalView` does compared to a normal React
 function component is that it is wrapped in `observer` from `mobx-react`. This
 makes `AnimalView` automatically re-render itself if anything that it observes
 changes. In this case the observable information is the computed property
-`isHungry`, which in turn it based on the observable property `energy`.
+`isHungry`, which in turn is based on the observable property `energy`.
 `AnimalView` automatically re-renders itself only if `isHungry` changes. You
 don't need to do anything else to make that happen.
 
