@@ -15,7 +15,7 @@
     "react-hot-loader": "4.13.0"
   },
   "dependencies": {
-    "docz": "^1.3.2",
+    "docz": "^2.0.0",
     "mobx": "^5.9.4",
     "mobx-react": "^6.1.3",
     "mobx-react-lite": "^1.4.1",
