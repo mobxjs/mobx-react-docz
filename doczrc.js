@@ -8,6 +8,7 @@ export default {
   typescript: true,
   propsParser: false,
   codeSandbox: false,
+  wrapper: 'content/components/Deprecated',
   htmlContext: {
     head: {
       links: [
