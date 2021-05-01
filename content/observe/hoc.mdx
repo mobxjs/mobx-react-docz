@@ -48,3 +48,18 @@ export const Counter = observer<Props>(props => {
   )
 })
 ```
+
+## Babel macro _(mobx-react-lite >= 1.5.0)_
+
+By default, components wrapped with the observer HOC are anonymous. The `Counter` component from the example above would only
+show up as `wrappedComponent` or `Memo` in the React DevTools or in console log mesages.
+
+For a better developer experience, there is a Babel macro included in the `mobx-react-lite` package, which
+transforms components wrapped with `observer` to retain their name.
+
+To use the macro install [`babel-plugin-macros`](https://github.com/kentcdodds/babel-plugin-macros),
+then simply change your import declarations from `mobx-react-lite` to `mobx-react-lite/macro`.
+
+```tsx
+import { observer, useLocalStore } from 'mobx-react-lite/macro'
+```
