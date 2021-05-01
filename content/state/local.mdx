@@ -16,9 +16,11 @@ useLocalStore<T, S>(initializer: () => T, source?: S): T
 
 Local observable state can be introduced by using the `useLocalStore` hook, that runs its initializer function once to create an observable store and keeps it around for a lifetime of a component.
 
-All properties of the returned object will be made observable automatically, getters will be turned into computed properties, and methods will be bound to the store and apply [mobx transactions][actions] automatically. If new class instances are returned from the initializer, they will be kept as is.
+All properties of the returned object will be made observable automatically, getters will be turned into computed properties, and methods will be bound to the store and apply [mobx transactions][transactions] automatically. If new class instances are returned from the initializer, they will be kept as is.
 
 > Note that using a local store might conflict with future React features like concurrent rendering.
+
+> Note that transactions are not [actions][actions]. It is still needed to be [explicit about actions][useLocalStore and strict mode issue], if strict mode of mobx is used.
 
 import { SmartTodo } from '../examples/SmartTodo'
 
@@ -103,4 +105,6 @@ Note that internally the `useAsObservableSource` hook is used to wrap around pas
 
 [decorators]: https://mobx.js.org/refguide/observable-decorator.html
 [actions]: https://mobx.js.org/refguide/action.html
+[transactions]: https://doc.ebichu.cc/mobx/refguide/transaction.html
+[useLocalStore and strict mode issue]: https://github.com/mobxjs/mobx-react-lite/issues/235#issuecomment-549138533
 [mobx-state-tree]: https://github.com/mobxjs/mobx-state-tree
